@@ -1047,7 +1047,8 @@ el.ghost('b', {
         fly(dom).clearPositioning();
         fly(dom).setPositioning(pos);
         if(!o.wrap){
-            wrap.dom.parentNode.insertBefore(dom, wrap);
+            var pn = fly(wrap).dom.parentNode;
+            pn.insertBefore(dom, wrap); 
             fly(wrap).remove();
         }
     },
