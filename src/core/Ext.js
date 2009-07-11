@@ -509,8 +509,8 @@ function(el){
         },
 
         /**
-         * Returns true if the passed object is a JavaScript array, otherwise false.
-         * @param {Object} object The object to test
+         * Returns true if the passed value is a JavaScript array, otherwise false.
+         * @param {Mixed} value The value to test
          * @return {Boolean}
          */
         isArray : function(v){
@@ -518,8 +518,8 @@ function(el){
         },
 
         /**
-         * Returns true if the passed object is a JavaScript Object, otherwise false.
-         * @param {Object} object The object to test
+         * Returns true if the passed value is a JavaScript Object, otherwise false.
+         * @param {Mixed} value The value to test
          * @return {Boolean}
          */
         isObject : function(v){
@@ -527,7 +527,7 @@ function(el){
         },
 
         /**
-         * Returns true if the passed object is a JavaScript 'primitive', a string, number or boolean.
+         * Returns true if the passed value is a JavaScript 'primitive', a string, number or boolean.
          * @param {Mixed} value The value to test
          * @return {Boolean}
          */
@@ -536,8 +536,8 @@ function(el){
         },
 
         /**
-         * Returns true if the passed object is a JavaScript Function, otherwise false.
-         * @param {Object} object The object to test
+         * Returns true if the passed value is a JavaScript Function, otherwise false.
+         * @param {Mixed} value The value to test
          * @return {Boolean}
          */
         isFunction : function(v){
@@ -545,8 +545,8 @@ function(el){
         },
 
         /**
-         * Returns true if the passed object is a number. Returns false for non-finite numbers.
-         * @param {Object} v The object to test
+         * Returns true if the passed value is a number. Returns false for non-finite numbers.
+         * @param {Mixed} value The value to test
          * @return {Boolean}
          */
         isNumber: function(v){
@@ -554,8 +554,8 @@ function(el){
         },
 
         /**
-         * Returns true if the passed object is a string.
-         * @param {Object} v The object to test
+         * Returns true if the passed value is a string.
+         * @param {Mixed} value The value to test
          * @return {Boolean}
          */
         isString: function(v){
@@ -563,8 +563,8 @@ function(el){
         },
 
         /**
-         * Returns true if the passed object is a boolean.
-         * @param {Object} v The object to test
+         * Returns true if the passed value is a boolean.
+         * @param {Mixed} value The value to test
          * @return {Boolean}
          */
         isBoolean: function(v){
@@ -572,8 +572,8 @@ function(el){
         },
 
         /**
-         * Returns true if the passed object is not undefined.
-         * @param {Object} v The object to test
+         * Returns true if the passed value is not undefined.
+         * @param {Mixed} value The value to test
          * @return {Boolean}
          */
         isDefined: function(v){
