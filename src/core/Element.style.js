@@ -202,7 +202,7 @@ Ext.Element.addMethods(function(){
          */
         getColor : function(attr, defaultValue, prefix){
             var v = this.getStyle(attr),
-                color = prefix || '#',
+                color = Ext.isDefined(prefix) ? prefix : '#',
                 h;
                 
             if(!v || /transparent|inherit/.test(v)){
