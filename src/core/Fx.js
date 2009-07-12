@@ -998,7 +998,7 @@ el.ghost('b', {
 
     /* @private */
     queueFx : function(o, fn){
-        var me = this;
+        var me = fly(this.dom);
         if(!me.hasFxBlock()){
             Ext.applyIf(o, me.fxDefaults);
             if(!o.concurrent){
