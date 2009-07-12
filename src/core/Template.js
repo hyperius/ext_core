@@ -35,8 +35,11 @@ var t = new Ext.Template(
     '&lt;div name="{id}"&gt;',
         '&lt;span class="{cls}"&gt;{name} {value}&lt;/span&gt;',
     '&lt;/div&gt;',
-    {compiled: true},      // {@link #compile} immediately
-    {disableFormats: true} // See Notes below.
+    // a configuration object:
+    {
+        compiled: true,      // {@link #compile} immediately
+        disableFormats: true // See Notes below.
+    } 
 );
  * </code></pre>
  * <p><b>Notes</b>:</p>
