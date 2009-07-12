@@ -140,6 +140,13 @@ El.prototype = {
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
     /**
+     * @event contextmenu
+     * Fires when a right click is detected within the element.
+     * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
+     * @param {HtmlElement} t The target of the event.
+     * @param {Object} o The options configuration passed to the {@link #addListener} call.
+     */
+    /**
      * @event dblclick
      * Fires when a mouse double click is detected within the element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
