@@ -25,17 +25,17 @@ Ext.util.JSON = new (function(){
             return eval("(" + json + ')');    
         },
         doEncode = function(o){
-            if(typeof o == "undefined" || o === null){
+            if(!Ext.isDefined(o) || o === null){
                 return "null";
             }else if(Ext.isArray(o)){
                 return encodeArray(o);
-            }else if(Object.prototype.toString.apply(o) === '[object Date]'){
+            }else if(Ext.isDate(o)){
                 return Ext.util.JSON.encodeDate(o);
-            }else if(typeof o == "string"){
+            }else if(Ext.isString("string")){
                 return encodeString(o);
             }else if(typeof o == "number"){
                 return isFinite(o) ? String(o) : "null";
-            }else if(typeof o == "boolean"){
+            }else if(Ext.isBoolean(o)){
                 return String(o);
             }else {
                 var a = ["{"], b, i, v;
