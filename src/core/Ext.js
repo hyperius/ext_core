@@ -305,17 +305,19 @@ Company.data.CustomStore = function(config) { ... }
          * @return {String}
          */
         urlEncode: function(o, pre){
-            var undef, buf = [], key, e = encodeURIComponent;
+            var empty, 
+                buf = [], 
+                e = encodeURIComponent;
 
-            for(key in o){
-                undef = !Ext.isDefined(o[key]);
-                Ext.each(undef ? key : o[key], function(val, i){
-                    buf.push("&", e(key), "=", (val != key || !undef) ? e(val) : "");
+            Ext.iterate(o, function(key, item){
+                empty = Ext.isEmpty(item);
+                Ext.each(empty ? key : item, function(val, i){
+                    buf.push('&', e(key), '=', (val != key || !empty) ? (Ext.isDate(val) ? Ext.encode(val).replace(/"/g, '') : e(val)) : '');
                 });
-            }
+            });
             if(!pre){
                 buf.shift();
-                pre = "";
+                pre = '';
             }
             return pre + buf.join('');
         },
@@ -330,6 +332,9 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
          * @return {Object} A literal with members
          */
         urlDecode : function(string, overwrite){
+            if(Ext.isEmpty(string)){
+                return {};
+            }
             var obj = {},
                 pairs = string.split('&'),
                 d = decodeURIComponent,
@@ -515,6 +520,15 @@ function(el){
          */
         isArray : function(v){
             return toString.apply(v) === '[object Array]';
+        },
+        
+        /**
+         * Returns true if the passed object is a JavaScript date object, otherwise false.
+         * @param {Object} object The object to test
+         * @return {Boolean}
+         */
+        isDate : function(v){
+            return toString.apply(v) === '[object Date]';
         },
 
         /**
