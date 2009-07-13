@@ -311,8 +311,8 @@ Company.data.CustomStore = function(config) { ... }
 
             Ext.iterate(o, function(key, item){
                 empty = Ext.isEmpty(item);
-                Ext.each(empty ? key : item, function(val, i){
-                    buf.push('&', e(key), '=', (val != key || !empty) ? (Ext.isDate(val) ? Ext.encode(val).replace(/"/g, '') : e(val)) : '');
+                Ext.each(empty ? key : item, function(val){
+                    buf.push('&', e(key), '=', (!Ext.isEmpty(val) && (val != key || !empty)) ? (Ext.isDate(val) ? Ext.encode(val).replace(/"/g, '') : e(val)) : '');
                 });
             });
             if(!pre){
