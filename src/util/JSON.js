@@ -34,6 +34,7 @@ Ext.util.JSON = new (function(){
             }else if(Ext.isString("string")){
                 return encodeString(o);
             }else if(typeof o == "number"){
+                //don't use isNumber here, since finite checks happen inside isNumber
                 return isFinite(o) ? String(o) : "null";
             }else if(Ext.isBoolean(o)){
                 return String(o);
