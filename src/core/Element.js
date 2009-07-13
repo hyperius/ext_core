@@ -126,7 +126,7 @@ El.prototype = {
             }
         }
         if(o.style){
-            Ext.DomHelper.applyStyles(el, o.style);
+            DH.applyStyles(el, o.style);
         }
         return this;
     },
