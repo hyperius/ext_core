@@ -428,6 +428,9 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
          * the specified <tt>object</tt>
          */
         iterate : function(obj, fn, scope){
+            if(Ext.isEmpty(obj)){
+                return;
+            }
             if(isIterable(obj)){
                 Ext.each(obj, fn, scope);
                 return;
