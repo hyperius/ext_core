@@ -31,7 +31,7 @@ Ext.util.JSON = new (function(){
                 return encodeArray(o);
             }else if(Ext.isDate(o)){
                 return Ext.util.JSON.encodeDate(o);
-            }else if(Ext.isString("string")){
+            }else if(Ext.isString(o)){
                 return encodeString(o);
             }else if(typeof o == "number"){
                 //don't use isNumber here, since finite checks happen inside isNumber
