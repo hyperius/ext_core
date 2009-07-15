@@ -164,11 +164,18 @@ Ext.Element.addMethods(function(){
                 function(prop){
                     var el = this.dom,
                         v,                  
-                        cs;
+                        cs,
+                        out;
                     if(el == document) return null;
                     prop = chkCache(prop);
-                    return (v = el.style[prop]) ? v : 
+                    out = (v = el.style[prop]) ? v : 
                            (cs = view.getComputedStyle(el, "")) ? cs[prop] : null;
+                    
+                    // Webkit returns rgb values for transparent.
+                    if(Ext.isWebKit && out == 'rgba(0, 0, 0, 0)'){
+                        out = 'transparent';
+                    }
+                    return out;
                 } :
                 function(prop){      
                     var el = this.dom, 
