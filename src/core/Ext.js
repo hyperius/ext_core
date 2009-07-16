@@ -249,7 +249,7 @@ MyGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 });
                 sbp.override = io;
                 Ext.override(sb, overrides);
-                sb.extend = function(o){Ext.extend(sb, o);};
+                sb.extend = function(o){return Ext.extend(sb, o);};
                 return sb;
             };
         }(),
