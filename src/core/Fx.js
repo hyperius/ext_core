@@ -1062,8 +1062,7 @@ el.ghost('b', {
     /* @private */
     afterFx : function(o){
         var dom = this.dom,
-            id = dom.id,
-            notConcurrent = !o.concurrent;
+            id = dom.id;
         if(o.afterStyle){
             fly(dom).setStyle(o.afterStyle);            
         }
@@ -1073,13 +1072,11 @@ el.ghost('b', {
         if(o.remove == TRUE){
             fly(dom).remove();
         }
-        if(notConcurrent){
-            getQueue(id).shift();
-        }
         if(o.callback){
             o.callback.call(o.scope, fly(dom));
         }
-        if(notConcurrent){
+        if(!o.concurrent){
+            getQueue(id).shift();
             fly(dom).nextFx();
         }
     },
