@@ -111,7 +111,7 @@ var combo = new Ext.form.ComboBox({
 };
 
 EXTUTIL.Observable.prototype = function(){
-    var filterOptRe = /^(?:scope|delay|buffer|single)$/, toLower = function(s){
+    var toLower = function(s){
         return s.toLowerCase();
     };
 
@@ -124,7 +124,8 @@ EXTUTIL.Observable.prototype = function(){
          * @param {Object...} args Variable number of parameters are passed to handlers.
          * @return {Boolean} returns false if any of the handlers return false otherwise it returns true.
          */
-
+        filterOptRe : /^(?:scope|delay|buffer|single)$/,
+        
         fireEvent : function(){
             var a = TOARRAY(arguments),
                 ename = toLower(a[0]),
@@ -226,7 +227,7 @@ myGridPanel.on({
                 o = eventName;
                 for (e in o){
                     oe = o[e];
-                    if (!filterOptRe.test(e)) {
+                    if (!this.filterOptRe.test(e)) {
                         me.addListener(e, oe.fn || oe, oe.scope || o.scope, oe.fn ? oe : o);
                     }
                 }

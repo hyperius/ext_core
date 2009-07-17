@@ -286,8 +286,8 @@
 				            Ext.each(element.options, function(opt) {
 					            if (opt.selected) {
 						            data += String.format("{0}={1}&", 						            					  
-						            					 encoder(name),						            					 
-						            					  (opt.hasAttribute ? opt.hasAttribute('value') : opt.getAttributeNode('value').specified) ? opt.value : opt.text);
+						            					 encoder(name),
+                                                         encoder((opt.hasAttribute ? opt.hasAttribute('value') : opt.getAttribute('value') !== null) ? opt.value : opt.text));
                                 }								
                             });
 		                } else if(!/file|undefined|reset|button/i.test(type)) {
