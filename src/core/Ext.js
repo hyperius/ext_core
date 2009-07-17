@@ -293,6 +293,7 @@ Company.data.CustomStore = function(config) { ... }
          * @param {String} namespace1
          * @param {String} namespace2
          * @param {String} etc
+         * @return {Object} The namespace object. (If multiple arguments are passed, this will be the last namespace created)
          * @method namespace
          */
         namespace : function(){
@@ -715,7 +716,8 @@ Company.data.CustomStore = function(config) { ... }
      * @param {String} namespace1
      * @param {String} namespace2
      * @param {String} etc
-     * @method namespace
+     * @return {Object} The namespace object. (If multiple arguments are passed, this will be the last namespace created)
+     * @method ns
      */
     Ext.ns = Ext.namespace;
 })();
