@@ -39,8 +39,8 @@
 	            tId : tId,
 	            status : isAbort ? -1 : 0,
 	            statusText : isAbort ? 'transaction aborted' : 'communication failure',
-                    isAbort: true,
-                    isTimeout: true,
+                isAbort: isAbort,
+                isTimeout: isTimeout,
 	            argument : callbackArg
             };
         }  
