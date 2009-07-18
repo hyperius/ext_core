@@ -449,7 +449,7 @@ El.prototype = {
      * @param {Function} fn The handler function the event invokes. This function is passed
      * the following parameters:<ul>
      * <li><b>evt</b> : EventObject<div class="sub-desc">The {@link Ext.EventObject EventObject} describing the event.</div></li>
-     * <li><b>el</b> : Element<div class="sub-desc">The {@link Ext.Element Element} which was the target of the event.
+     * <li><b>el</b> : HtmlElement<div class="sub-desc">The DOM element which was the target of the event.
      * Note that this may be filtered by using the <tt>delegate</tt> option.</div></li>
      * <li><b>o</b> : Object<div class="sub-desc">The options object from the addListener call.</div></li>
      * </ul>
