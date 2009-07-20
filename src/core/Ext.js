@@ -148,7 +148,7 @@ Ext.apply = function(o, c, defaults){
         applyIf : function(o, c){
             if(o){
                 for(var p in c){
-                    if(Ext.isEmpty(o[p])){
+                    if(!Ext.isDefined(o[p])){
                         o[p] = c[p];
                     }
                 }
