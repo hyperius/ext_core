@@ -49,7 +49,7 @@ Ext.Element.addMethods(function(){
         /**
          * Sets the element's visibility mode. When setVisible() is called it
          * will use this to determine whether to set the visibility or the display property.
-         * @param visMode Ext.Element.VISIBILITY or Ext.Element.DISPLAY
+         * @param {Number} visMode Ext.Element.VISIBILITY or Ext.Element.DISPLAY
          * @return {Ext.Element} this
          */
         setVisibilityMode : function(visMode){  
