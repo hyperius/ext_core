@@ -314,9 +314,9 @@ Company.data.CustomStore = function(config) { ... }
          * @param {String} pre (optional) A prefix to add to the url encoded string
          * @return {String}
          */
-        urlEncode: function(o, pre){
-            var empty, 
-                buf = [], 
+        urlEncode : function(o, pre){
+            var empty,
+                buf = [],
                 e = encodeURIComponent;
 
             Ext.iterate(o, function(key, item){
@@ -396,14 +396,29 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
         }(),
 
         /**
-         * Iterates an array calling the passed function with each item, stopping if your function returns false. If the
-         * passed array is not really an array, your function is called once with it.
-         * The supplied function is called with (Object item, Number index, Array allItems).
-         * @param {Array/NodeList/Mixed} array
-         * @param {Function} fn
-         * @param {Object} scope
+         * Iterates an array calling the supplied function.
+         * @param {Array/NodeList/Mixed} array The array to be iterated. If this
+         * argument is not really an array, the supplied function is called once.
+         * @param {Function} fn The function to be called with each item. If the
+         * supplied function returns false, iteration stops and this method returns
+         * the current <code>index</code>. This function is called with
+         * the following arguments:
+         * <div class="mdetail-params"><ul>
+         * <li><code>item</code> : <i>Mixed</i>
+         * <div class="sub-desc">The item at the current <code>index</code>
+         * in the passed <code>array</code></div></li>
+         * <li><code>index</code> : <i>Number</i>
+         * <div class="sub-desc">The current index within the array</div></li>
+         * <li><code>allItems</code> : <i>Array</i>
+         * <div class="sub-desc">The <code>array</code> passed as the first
+         * argument to <code>Ext.each</code>.</div></li>
+         * </ul></div>
+         * @param {Object} scope The scope to call the specified function. 
+         * Defaults to the <code>item</code> at the current <code>index</code>
+         * within the passed <code>array</code>.
+         * @return See description for the fn parameter. 
          */
-        each: function(array, fn, scope){
+        each : function(array, fn, scope){
             if(Ext.isEmpty(array, true)){
                 return;
             }
@@ -534,7 +549,7 @@ function(el){
         isArray : function(v){
             return toString.apply(v) === '[object Array]';
         },
-        
+
         /**
          * Returns true if the passed object is a JavaScript date object, otherwise false.
          * @param {Object} object The object to test
@@ -576,7 +591,7 @@ function(el){
          * @param {Mixed} value The value to test
          * @return {Boolean}
          */
-        isNumber: function(v){
+        isNumber : function(v){
             return typeof v === 'number' && isFinite(v);
         },
 
@@ -585,7 +600,7 @@ function(el){
          * @param {Mixed} value The value to test
          * @return {Boolean}
          */
-        isString: function(v){
+        isString : function(v){
             return typeof v === 'string';
         },
 
@@ -594,7 +609,7 @@ function(el){
          * @param {Mixed} value The value to test
          * @return {Boolean}
          */
-        isBoolean: function(v){
+        isBoolean : function(v){
             return typeof v === 'boolean';
         },
 
@@ -603,7 +618,7 @@ function(el){
          * @param {Mixed} value The value to test
          * @return {Boolean}
          */
-        isDefined: function(v){
+        isDefined : function(v){
             return typeof v !== 'undefined';
         },
 
@@ -616,7 +631,7 @@ function(el){
          * True if the detected browser uses WebKit.
          * @type Boolean
          */
-        isWebKit: isWebKit,
+        isWebKit : isWebKit,
         /**
          * True if the detected browser is Chrome.
          * @type Boolean
