@@ -29,7 +29,7 @@
 
             if (pub.headers) {
 				setTheHeaders(conn, pub.headers);
-                pub.headers = null;                
+                delete pub.headers;                
             }
         }    
         
