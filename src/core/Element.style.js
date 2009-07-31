@@ -60,7 +60,7 @@ Ext.Element.addMethods(function(){
         // private  ==> used by Fx  
         adjustWidth : function(width) {
             var me = this;
-            var isNum = (typeof width == "number");
+            var isNum = Ext.isNumber(width);
             if(isNum && me.autoBoxAdjust && !me.isBorderBox()){
                width -= (me.getBorderWidth("lr") + me.getPadding("lr"));
             }
@@ -70,7 +70,7 @@ Ext.Element.addMethods(function(){
         // private   ==> used by Fx 
         adjustHeight : function(height) {
             var me = this;
-            var isNum = (typeof height == "number");
+            var isNum = Ext.isNumber(height);
             if(isNum && me.autoBoxAdjust && !me.isBorderBox()){
                height -= (me.getBorderWidth("tb") + me.getPadding("tb"));               
             }
@@ -302,7 +302,9 @@ Ext.Element.addMethods(function(){
         getHeight : function(contentHeight){
             var me = this,
                 dom = me.dom,
-                h = MATH.max(dom.offsetHeight, dom.clientHeight) || 0;
+                hidden = Ext.isIE && me.isStyle('display', 'none'),
+                h = MATH.max(dom.offsetHeight, hidden ? 0 : dom.clientHeight) || 0;
+                
             h = !contentHeight ? h : h - me.getBorderWidth("tb") - me.getPadding("tb");
             return h < 0 ? 0 : h;
         },
@@ -315,7 +317,8 @@ Ext.Element.addMethods(function(){
         getWidth : function(contentWidth){
             var me = this,
                 dom = me.dom,
-                w = MATH.max(dom.offsetWidth, dom.clientWidth) || 0;
+                hidden = Ext.isIE && me.isStyle('display', 'none'),
+                w = MATH.max(dom.offsetWidth, hidden ? 0 : dom.clientWidth) || 0;
             w = !contentWidth ? w : w - me.getBorderWidth("lr") - me.getPadding("lr");
             return w < 0 ? 0 : w;
         },
