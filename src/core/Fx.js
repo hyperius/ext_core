@@ -576,7 +576,6 @@ el.frame("C3DAF9", 1, {
                 queue = function(){
                     proxy = fly(document.body || document.documentElement).createChild({
                         style:{
-                            visibility: HIDDEN,
                             position : ABSOLUTE,
                             'z-index': 35000, // yee haw
                             border : '0px solid ' + color
