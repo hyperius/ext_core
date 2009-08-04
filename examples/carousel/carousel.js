@@ -58,7 +58,7 @@ Ext.ux.Carousel = Ext.extend(Ext.util.Observable, {
         var dh = Ext.DomHelper;
         
         this.carouselSize = 0;
-        
+        var items = this.el.select(this.itemSelector);
         this.els.container = dh.append(this.el, {cls: 'ux-carousel-container'}, true);
         this.els.slidesWrap = dh.append(this.els.container, {cls: 'ux-carousel-slides-wrap'}, true);
 
@@ -80,7 +80,7 @@ Ext.ux.Carousel = Ext.extend(Ext.util.Observable, {
 
         this.els.caption.setWidth((this.slideWidth - (this.els.navNext.getWidth()*2) - (this.showPlayButton ? this.els.navPlay.getWidth() : 0) - 20) + 'px')
         
-        this.el.select(this.itemSelector).appendTo(this.els.slidesWrap).each(function(item) {
+        items.appendTo(this.els.slidesWrap).each(function(item) {
             item = item.wrap({cls: 'ux-carousel-slide'});
             this.slides.push(item);
             item.setWidth(this.slideWidth + 'px').setHeight(this.slideHeight + 'px');
