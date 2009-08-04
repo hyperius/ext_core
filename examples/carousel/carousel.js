@@ -14,6 +14,8 @@ Ext.ux.Carousel = Ext.extend(Ext.util.Observable, {
     freezeOnHover: false,
     navigationOnHover: false,
     hideNavigation: false,
+    width: null,
+    height: null,
 
     constructor: function(elId, config) {
         config = config || {};
@@ -40,7 +42,7 @@ Ext.ux.Carousel = Ext.extend(Ext.util.Observable, {
             this.wrap = true;
         };
 
-        if(this.autoPlay && config.showPlayButton === undefined) {
+        if(this.autoPlay && typeof config.showPlayButton === 'undefined') {
             this.showPlayButton = true;
         }
 
@@ -69,8 +71,8 @@ Ext.ux.Carousel = Ext.extend(Ext.util.Observable, {
         this.els.navPrev = dh.append(this.els.navigation, {tag: 'a', href: '#', cls: 'ux-carousel-nav-prev'}, true);
 
         // set the dimensions of the container
-        this.slideWidth = this.el.getWidth(true);
-        this.slideHeight = this.el.getHeight(true);
+        this.slideWidth = this.width || this.el.getWidth(true);
+        this.slideHeight = this.height || this.el.getHeight(true);
         this.els.container.setStyle({
             width: this.slideWidth + 'px',
             height: this.slideHeight + 'px'
@@ -205,7 +207,9 @@ Ext.ux.Carousel = Ext.extend(Ext.util.Observable, {
 
             this.playTaskBuffer.delay(this.interval*1000);
             this.playing = true;
-            this.els.navPlay.addClass('ux-carousel-playing');
+            if(this.showPlayButton) {
+                this.els.navPlay.addClass('ux-carousel-playing');
+            }
             this.fireEvent('play');
         }        
         return this;
@@ -216,7 +220,9 @@ Ext.ux.Carousel = Ext.extend(Ext.util.Observable, {
             Ext.TaskMgr.stop(this.playTask);
             this.playTaskBuffer.cancel();
             this.playing = false;
-            this.els.navPlay.removeClass('ux-carousel-playing');
+            if(this.showPlayButton) {
+                this.els.navPlay.removeClass('ux-carousel-playing');
+            }
             this.fireEvent('pause');
         }        
         return this;

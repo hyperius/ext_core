@@ -269,7 +269,8 @@ Ext.ux.Lightbox = (function(){
         },
 
         updateDetails: function(){
-            els.details.setWidth((els.data.getWidth(true) - els.navClose.getWidth() - 10) + 'px');
+            var detailsWidth = els.data.getWidth(true) - els.navClose.getWidth() - 10;
+            els.details.setWidth((detailsWidth > 0 ? detailsWidth : 0) + 'px');
             
             els.caption.update(images[activeImage][1]);
 
