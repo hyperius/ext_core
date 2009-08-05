@@ -942,7 +942,7 @@ Ext.applyIf(Array.prototype, {
         from += (from < 0) ? len : 0;
         for (; from < len; ++from){
             if(this[from] === o){
-                return i;
+                return from;
             }
         }
         return -1;
