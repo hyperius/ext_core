@@ -933,11 +933,15 @@ Ext.applyIf(Array.prototype, {
     /**
      * Checks whether or not the specified object exists in the array.
      * @param {Object} o The object to check for
+     * @param {Number} from (Optional) The index at which to begin the search
      * @return {Number} The index of o in the array (or -1 if it is not found)
      */
-    indexOf : function(o){
-        for (var i = 0, len = this.length; i < len; i++){
-            if(this[i] == o){
+    indexOf : function(o, from){
+        var len = this.length;
+        from = from || 0;
+        from += (from < 0) ? len : 0;
+        for (; from < len; ++from){
+            if(this[from] === o){
                 return i;
             }
         }
