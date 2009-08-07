@@ -746,9 +746,9 @@ Ext.ns("Ext", "Ext.util", "Ext.lib", "Ext.data");
  */
 Ext.apply(Function.prototype, {
      /**
-     * Creates an interceptor function. The passed fcn is called before the original one. If it returns false,
+     * Creates an interceptor function. The passed function is called before the original one. If it returns false,
      * the original one is not called. The resulting function returns the results of the original function.
-     * The passed fcn is called with the parameters of the original function. Example usage:
+     * The passed function is called with the parameters of the original function. Example usage:
      * <pre><code>
 var sayHi = function(name){
     alert('Hi, ' + name);
@@ -766,7 +766,8 @@ sayHiToFriend('Fred');  // no alert
 sayHiToFriend('Brian'); // alerts "Hi, Brian"
 </code></pre>
      * @param {Function} fcn The function to call before the original
-     * @param {Object} scope (optional) The scope of the passed fcn (Defaults to scope of original function or window)
+     * @param {Object} scope (optional) The scope (<code><b>this</b></code> reference) in which the passed function is executed.
+     * <b>If omitted, defaults to the scope in which the original function is called or the browser window.</b>
      * @return {Function} The new function
      */
     createInterceptor : function(fcn, scope){
@@ -841,10 +842,11 @@ var btn = new Ext.Button({
 // "Hi, Fred. You clicked the "Say Hi" button."
 btn.on('click', sayHi.createDelegate(btn, ['Fred']));
 </code></pre>
-     * @param {Object} obj (optional) The object for which the scope is set
+     * @param {Object} scope (optional) The scope (<code><b>this</b></code> reference) in which the function is executed.
+     * <b>If omitted, defaults to the browser window.</b>
      * @param {Array} args (optional) Overrides arguments for the call. (Defaults to the arguments passed by the caller)
      * @param {Boolean/Number} appendArgs (optional) if True args are appended to call args instead of overriding,
-     *                                             if a number the args are inserted at the specified position
+     * if a number the args are inserted at the specified position
      * @return {Function} The new function
      */
     createDelegate : function(obj, args, appendArgs){
@@ -883,10 +885,11 @@ sayHi.defer(2000, this, ['Fred']);
 }).defer(100);
 </code></pre>
      * @param {Number} millis The number of milliseconds for the setTimeout call (if less than or equal to 0 the function is executed immediately)
-     * @param {Object} obj (optional) The object for which the scope is set
+     * @param {Object} scope (optional) The scope (<code><b>this</b></code> reference) in which the function is executed.
+     * <b>If omitted, defaults to the browser window.</b>
      * @param {Array} args (optional) Overrides arguments for the call. (Defaults to the arguments passed by the caller)
      * @param {Boolean/Number} appendArgs (optional) if True args are appended to call args instead of overriding,
-     *                                             if a number the args are inserted at the specified position
+     * if a number the args are inserted at the specified position
      * @return {Number} The timeout id that can be used with clearTimeout
      */
     defer : function(millis, obj, args, appendArgs){
