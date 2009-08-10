@@ -116,6 +116,9 @@ EXTUTIL.Observable.prototype = function(){
     };
 
     return {
+        // private
+        filterOptRe : /^(?:scope|delay|buffer|single)$/,
+        
         /**
          * <p>Fires the specified event with the passed parameters (minus the event name).</p>
          * <p>An event may be set to bubble up an Observable parent hierarchy (See {@link Ext.Component#getBubbleTarget})
@@ -124,8 +127,6 @@ EXTUTIL.Observable.prototype = function(){
          * @param {Object...} args Variable number of parameters are passed to handlers.
          * @return {Boolean} returns false if any of the handlers return false otherwise it returns true.
          */
-        filterOptRe : /^(?:scope|delay|buffer|single)$/,
-        
         fireEvent : function(){
             var a = TOARRAY(arguments),
                 ename = toLower(a[0]),
