@@ -93,6 +93,35 @@ Ext.CompositeElementLite.prototype = {
     },
     
     /**
+    * Clears this composite and adds the elements returned by the passed selector.
+    * @param {String/Array} els A string CSS selector, an array of elements or an element
+    * @return {CompositeElement} this
+    */
+    fill : function(els){
+        var me = this;
+        me.elements = [];
+        me.add(els);
+        return me;
+    },
+    
+    /**
+    * Filters this composite to only elements that match the passed selector.
+    * @param {String} selector A string CSS selector
+    * @return {CompositeElement} this
+    */
+    filter : function(selector){
+        var els = [],
+            me = this;
+        me.each(function(el){
+            if(el.is(selector)){
+                els[els.length] = el.dom;
+            }
+        });
+        me.fill(els);
+        return me;
+    },
+    
+    /**
      * Find the index of the passed element within the composite collection.
      * @param el {Mixed} The id of an element, or an Ext.Element, or an HtmlElement to find within the composite collection.
      * @return Number The index of the passed Ext.Element in the composite collection, or -1 if not found.
