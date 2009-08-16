@@ -13,7 +13,7 @@ Ext = {
      * The version of the framework
      * @type String
      */
-    version : '3.0+'
+    version : '3.0.1'
 };
 
 /**
@@ -413,10 +413,10 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
          * <div class="sub-desc">The <code>array</code> passed as the first
          * argument to <code>Ext.each</code>.</div></li>
          * </ul></div>
-         * @param {Object} scope The scope to call the specified function. 
+         * @param {Object} scope The scope to call the specified function.
          * Defaults to the <code>item</code> at the current <code>index</code>
          * within the passed <code>array</code>.
-         * @return See description for the fn parameter. 
+         * @return See description for the fn parameter.
          */
         each : function(array, fn, scope){
             if(Ext.isEmpty(array, true)){
