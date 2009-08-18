@@ -106,14 +106,25 @@ Ext.CompositeElementLite.prototype = {
     
     /**
     * Filters this composite to only elements that match the passed selector.
-    * @param {String} selector A string CSS selector
+    * @param {String/Function} selector A string CSS selector or a comparison function.
+    * The comparison function will be called with the following arguments:
+         * <div class="mdetail-params"><ul>
+         * <li><code>el</code> : <i>Ext.Element</i>
+         * <div class="sub-desc">The current element</li>
+         * <li><code>index</code> : <i>Number</i>
+         * <div class="sub-desc">The current index within the collection</div></li>
+         * </ul></div>
     * @return {CompositeElement} this
     */
     filter : function(selector){
         var els = [],
-            me = this;
-        me.each(function(el){
-            if(el.is(selector)){
+            me = this,
+            fn = Ext.isFunction(selector) ? selector
+                : function(el){
+                    return el.is(selector);
+                }
+        me.each(function(el, self, i){
+            if(fn(el, i) !== false){
                 els[els.length] = el.dom;
             }
         });
