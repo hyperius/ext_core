@@ -698,7 +698,9 @@ el.un('click', this.handlerFn);
     * @return {Ext.Element} this
      */
     update : function(html) {
-        this.dom.innerHTML = html;
+        if (this.dom) {
+            this.dom.innerHTML = html;
+        }
         return this;
     }
 };
