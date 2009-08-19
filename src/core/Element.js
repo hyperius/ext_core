@@ -630,10 +630,12 @@ el.un('click', this.handlerFn);
             dom = me.dom;
         
         me.removeAllListeners();
-        delete me.dom;
-        delete El.cache[dom.id];
-        delete El.dataCache[dom.id];
-        Ext.removeNode(dom);
+        if (dom) {
+            delete me.dom;
+            delete El.cache[dom.id];
+            delete El.dataCache[dom.id];
+            Ext.removeNode(dom);
+        }
     },
 
     /**
