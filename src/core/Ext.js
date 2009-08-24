@@ -91,10 +91,10 @@ Ext.apply = function(o, c, defaults){
     Ext.apply(Ext, {
         /**
          * URL to a blank file used by Ext when in secure mode for iframe src and onReady src to prevent
-         * the IE insecure content warning (defaults to javascript:false).
+         * the IE insecure content warning (<tt>'about:blank'</tt>, except for IE in secure mode, which is <tt>'javascript:""'</tt>).
          * @type String
          */
-        SSL_SECURE_URL : 'javascript:false',
+        SSL_SECURE_URL : isSecure && isIE ? 'javascript:""' : 'about:blank', 
         /**
          * True if the browser is in strict (standards-compliant) mode, as opposed to quirks mode
          * @type Boolean
