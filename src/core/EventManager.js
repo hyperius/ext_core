@@ -279,11 +279,12 @@ Ext.EventManager = function(){
         },
 
         /**
-         * Fires when the document is ready (before onload and before images are loaded). Can be
+         * Adds a listener to be notified when the document is ready (before onload and before images are loaded). Can be
          * accessed shorthanded as Ext.onReady().
-         * @param {Function} fn The method the event invokes
-         * @param {Object} scope (optional) An object that becomes the scope of the handler
-         * @param {boolean} options (optional) An object containing standard {@link #addListener} options
+         * @param {Function} fn The method the event invokes.
+         * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the handler function executes. Defaults to the browser window.
+         * @param {boolean} options (optional) Options object as passed to {@link Ext.Element#addListener}. It is recommended that the options
+         * <code>{single: true}</code> be used so that the handler is removed on first invocation.
          */
         onDocumentReady : function(fn, scope, options){
             if(docReadyState){ // if it already fired
@@ -327,10 +328,11 @@ Ext.EventManager = function(){
     return pub;
 }();
 /**
-  * Fires when the document is ready (before onload and before images are loaded).  Shorthand of {@link Ext.EventManager#onDocumentReady}.
-  * @param {Function} fn The method the event invokes
-  * @param {Object} scope An object that becomes the scope of the handler
-  * @param {boolean} options (optional) An object containing standard {@link #addListener} options
+  * Adds a listener to be notified when the document is ready (before onload and before images are loaded). Shorthand of {@link Ext.EventManager#onDocumentReady}.
+  * @param {Function} fn The method the event invokes.
+  * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the handler function executes. Defaults to the browser window.
+  * @param {boolean} options (optional) Options object as passed to {@link Ext.Element#addListener}. It is recommended that the options
+  * <code>{single: true}</code> be used so that the handler is removed on first invocation.
   * @member Ext
   * @method onReady
  */
