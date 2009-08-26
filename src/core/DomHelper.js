@@ -198,9 +198,20 @@ Ext.DomHelper = function(){
     function ieTable(depth, s, h, e){
         tempTableEl.innerHTML = [s, h, e].join('');
         var i = -1,
-            el = tempTableEl;
+            el = tempTableEl,
+            ns;
         while(++i < depth){
             el = el.firstChild;
+        }
+//      If the result is multiple siblings, then encapsulate them into one fragment.
+        if(ns = el.nextSibling){
+            var df = document.createDocumentFragment();
+            while(el){
+                ns = el.nextSibling;
+                df.appendChild(el);
+                el = ns;
+            }
+            el = df;
         }
         return el;
     }
