@@ -292,7 +292,7 @@ Ext.DomHelper = function(){
          * Inserts an HTML fragment into the DOM.
          * @param {String} where Where to insert the html in relation to el - beforeBegin, afterBegin, beforeEnd, afterEnd.
          * @param {HTMLElement} el The context element
-         * @param {String} html The HTML fragmenet
+         * @param {String} html The HTML fragment
          * @return {HTMLElement} The new node
          */
         insertHtml : function(where, el, html){
