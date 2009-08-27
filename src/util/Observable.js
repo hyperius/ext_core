@@ -271,8 +271,13 @@ myGridPanel.on({
         },
 
         /**
-         * Used to define events on this Observable
-         * @param {Object} object The object with the events defined
+         * Adds the specified events to the list of events which this Observable may fire.
+         * @param {Object|String} o Either an object with event names as properties with a value of <code>true</code>
+         * or the first event name string if multiple event names are being passed as separate parameters.
+         * @param {string} Optional. Event name if multiple event names are being passed as separate parameters.
+         * Usage:<pre><code>
+this.addEvents('storeloaded', 'storecleared');
+</code></pre>
          */
         addEvents : function(o){
             var me = this;
