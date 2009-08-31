@@ -121,7 +121,7 @@
                 action: form.action
             };
             
-        Ext.apply(frame, {
+        Ext.fly(frame).set({
             id: id,
             name: id,
             className: 'x-hidden',
@@ -134,7 +134,7 @@
            document.frames[id].name = id;
         }
         
-        Ext.apply(form, {
+        Ext.fly(form).set({
             target: id,
             method: POST,
             enctype: encoding,
@@ -143,16 +143,16 @@
         });
         
         // add dynamic params            
-        ps = Ext.urlDecode(ps, false);
-        for(var k in ps){
-            if(ps.hasOwnProperty(k)){
-                hd = doc.createElement('input');
-                hd.type = 'hidden';                    
-                hd.value = ps[hd.name = k];
-                form.appendChild(hd);
-                hiddens.push(hd);
-            }
-        }        
+        Ext.iterate(Ext.urlDecode(ps, false), function(k, v){
+            hd = doc.createElement('input');
+            Ext.fly(hd).set({
+                type: 'hidden',
+                value: v,
+                name: k
+            });
+            form.appendChild(hd);
+            hiddens.push(hd);
+        });       
 
         function cb(){
             var me = this,
@@ -200,7 +200,7 @@
         Ext.EventManager.on(frame, LOAD, cb, this);
         form.submit();
         
-        Ext.apply(form, buf);
+        Ext.fly(form).set(buf);
         Ext.each(hiddens, function(h) {
             Ext.removeNode(h);
         });
