@@ -70,25 +70,9 @@ Ext.lib.Event = function() {
             }
             return ret;
         }();        
-
-    var isXUL = Ext.isGecko ? function(node){ 
-        return Object.prototype.toString.call(node) == '[object XULElement]';
-    } : function(){};
-        
-    var isTextNode = Ext.isGecko ? function(node){
-        try{
-            return node.nodeType == 3;
-        }catch(e) {
-            return false;
-        }
-
-    } : function(node){
-        return node.nodeType == 3;
-    };
         
     function checkRelatedTarget(e) {
-        var related = pub.getRelatedTarget(e);
-        return !(isXUL(related) || elContains(e.currentTarget,related));
+        return !elContains(e.currentTarget, pub.getRelatedTarget(e));
     }
 
     function elContains(parent, child) {
@@ -97,16 +81,7 @@ Ext.lib.Event = function() {
             if(child === parent) {
                 return true;
             }
-            try {
-                child = child.parentNode;
-            } catch(e) {
-                // In FF if you mouseout an text input element
-                // thats inside a div sometimes it randomly throws
-                // Permission denied to get property HTMLDivElement.parentNode
-                // See https://bugzilla.mozilla.org/show_bug.cgi?id=208427
-                
-                return false;
-            }                
+            child = child.parentNode;            
             if(child && (child.nodeType != 1)) {
                 child = null;
             }
@@ -263,8 +238,18 @@ Ext.lib.Event = function() {
             return this.resolveTextNode(ev.target || ev.srcElement);
         },
 
-        resolveTextNode : function(node) {
-            return node && !isXUL(node) && isTextNode(node) ? node.parentNode : node;
+        resolveTextNode : Ext.isGecko ? function(node){
+            if(!node){
+                return;
+            }
+            // work around firefox bug, https://bugzilla.mozilla.org/show_bug.cgi?id=101197
+            var s = HTMLElement.prototype.toString.call(node);
+            if(s == '[xpconnect wrapped native prototype]' || s == '[object XULElement]'){
+                return;
+            }
+            return node.nodeType == 3 ? node.parentNode : node;
+        } : function(node){
+            return node && node.nodeType == 3 ? node.parentNode : node;
         },
 
         getRelatedTarget : function(ev) {
