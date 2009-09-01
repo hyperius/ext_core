@@ -40,20 +40,6 @@ Ext.apply = function(o, c, defaults){
 (function(){
     var idSeed = 0,
         toString = Object.prototype.toString,
-        //assume it's not null and not an array
-        isIterable = function(v){
-            //check for array or arguments
-            if(Ext.isArray(v) || v.callee){
-                return true;
-            }
-            //check for node list type
-            if(/NodeList|HTMLCollection/.test(toString.call(v))){
-                return true;
-            }
-            //NodeList has an item and length property
-            //IXMLDOMNodeList has nextNode method, needs to be checked first.
-            return ((v.nextNode || v.item) && Ext.isNumber(v.length));
-        },
         ua = navigator.userAgent.toLowerCase(),
         check = function(r){
             return r.test(ua);
@@ -395,6 +381,20 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
                 }
         }(),
 
+        isIterable : function(v){
+            //check for array or arguments
+            if(Ext.isArray(v) || v.callee){
+                return true;
+            }
+            //check for node list type
+            if(/NodeList|HTMLCollection/.test(toString.call(v))){
+                return true;
+            }
+            //NodeList has an item and length property
+            //IXMLDOMNodeList has nextNode method, needs to be checked first.
+            return ((v.nextNode || v.item) && Ext.isNumber(v.length));
+        },
+
         /**
          * Iterates an array calling the supplied function.
          * @param {Array/NodeList/Mixed} array The array to be iterated. If this
@@ -422,7 +422,7 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
             if(Ext.isEmpty(array, true)){
                 return;
             }
-            if(!isIterable(array) || Ext.isPrimitive(array)){
+            if(!Ext.isIterable(array) || Ext.isPrimitive(array)){
                 array = [array];
             }
             for(var i = 0, len = array.length; i < len; i++){
@@ -456,7 +456,7 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
             if(Ext.isEmpty(obj)){
                 return;
             }
-            if(isIterable(obj)){
+            if(Ext.isIterable(obj)){
                 Ext.each(obj, fn, scope);
                 return;
             }else if(Ext.isObject(obj)){

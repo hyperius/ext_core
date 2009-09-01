@@ -38,25 +38,11 @@ Ext.Element.addMethods(function(){
         return a.charAt(1).toUpperCase();
     }
     
-    // private (needs to be called => addStyles.call(this, sides, styles))
-    function addStyles(sides, styles){
-        var val = 0;    
-        
-        Ext.each(sides.match(/\w/g), function(s) {
-            if (s = parseInt(this.getStyle(styles[s]), 10)) {
-                val += MATH.abs(s);      
-            }
-        },
-        this);
-        return val;
-    }
-
     function chkCache(prop) {
         return propCache[prop] || (propCache[prop] = prop == 'float' ? propFloat : prop.replace(camelRe, camelFn));
-
     }
             
-    return {    
+    return {
         // private  ==> used by Fx  
         adjustWidth : function(width) {
             var me = this;
@@ -198,7 +184,7 @@ Ext.Element.addMethods(function(){
                     return el.style[prop] || ((cs = el.currentStyle) ? cs[prop] : null);
                 };
         }(),
-        
+
         /**
          * Return the CSS color for the specified CSS attribute. rgb, 3 digit (like #fff) and valid values
          * are convert to standard 6 digit hex color.
@@ -377,7 +363,7 @@ Ext.fly('elId').setHeight(150, {
          * @return {Number} The width of the sides passed added together
          */
         getBorderWidth : function(side){
-            return addStyles.call(this, side, borders);
+            return this.addStyles(side, borders);
         },
     
         /**
@@ -387,7 +373,7 @@ Ext.fly('elId').setHeight(150, {
          * @return {Number} The padding of the sides passed added together
          */
         getPadding : function(side){
-            return addStyles.call(this, side, paddings);
+            return this.addStyles(side, paddings);
         },
     
         /**
@@ -435,8 +421,20 @@ Ext.fly('elId').setHeight(150, {
             }
             return me;
         },
-        
-        addStyles : addStyles,
+
+        // private
+        addStyles : function(sides, styles){
+            var val = 0;
+
+            Ext.each(sides.match(/\w/g), function(s) {
+                if (s = parseInt(this.getStyle(styles[s]), 10)) {
+                    val += MATH.abs(s);
+                }
+            },
+            this);
+            return val;
+        },
+
         margins : margins
     }
 }()         

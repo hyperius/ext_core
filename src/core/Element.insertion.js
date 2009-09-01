@@ -5,10 +5,7 @@ Ext.Element.addMethods(
 function() {
 	var GETDOM = Ext.getDom,
 		GET = Ext.get,
-		DH = Ext.DomHelper,
-        isEl = function(el){
-            return  (el.nodeType || el.dom || typeof el == 'string');  
-        };
+		DH = Ext.DomHelper;
 	
 	return {
 	    /**
@@ -57,14 +54,14 @@ function() {
 	     */
 	    insertFirst: function(el, returnDom){
             el = el || {};
-            if(isEl(el)){ // element
+            if(el.nodeType || el.dom || typeof el == 'string'){ // element
                 el = GETDOM(el);
                 this.dom.insertBefore(el, this.dom.firstChild);
                 return !returnDom ? GET(el) : el;
             }else{ // dh config
                 return this.createChild(el, this.dom.firstChild, returnDom);
             }
-    },
+        },
 	
 	    /**
 	     * Replaces the passed element with this element
@@ -86,7 +83,7 @@ function() {
 	    replaceWith: function(el){
 		    var me = this,
 		    	Element = Ext.Element;
-            if(isEl(el)){
+            if(el.nodeType || el.dom || typeof el == 'string'){
                 el = GETDOM(el);
                 me.dom.parentNode.insertBefore(el, me.dom);
             }else{
