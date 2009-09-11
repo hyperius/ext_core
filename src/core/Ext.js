@@ -413,7 +413,7 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
          * <div class="sub-desc">The <code>array</code> passed as the first
          * argument to <code>Ext.each</code>.</div></li>
          * </ul></div>
-         * @param {Object} scope The scope to call the specified function.
+         * @param {Object} scope The scope (<code>this</code> reference) in which the specified function is executed.
          * Defaults to the <code>item</code> at the current <code>index</code>
          * within the passed <code>array</code>.
          * @return See description for the fn parameter.
@@ -449,8 +449,8 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
          * When iterating an object, the supplied function is called with each key-value pair in
          * the object.</div></li>
          * </ul></div>
-         * @param {Object} scope The scope to call the supplied function with, defaults to
-         * the specified <tt>object</tt>
+         * @param {Object} scope The scope (<code>this</code> reference) in which the specified function is executed. Defaults to
+         * the <code>object</code> being iterated.
          */
         iterate : function(obj, fn, scope){
             if(Ext.isEmpty(obj)){
