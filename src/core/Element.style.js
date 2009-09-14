@@ -98,7 +98,7 @@ Ext.Element.addMethods(function(){
          */
         removeClass : function(className){
             var me = this;
-            if (me.dom.className) {
+            if (me.dom && me.dom.className) {
                 Ext.each(className, function(v) {               
                     me.dom.className = me.dom.className.replace(
                         classReCache[v] = classReCache[v] || new RegExp('(?:^|\\s+)' + v + '(?:\\s+|$)', "g"), 
