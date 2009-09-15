@@ -90,7 +90,7 @@ br     The bottom right corner
  * The callback is intended for any additional code that should run once a particular effect has completed. The Element
  * being operated upon is passed as the first parameter.
  * 
- * @cfg {Object} scope The scope of the <tt>{@link #callback}</tt> function
+ * @cfg {Object} scope The scope (<code>this</code> reference) in which the <tt>{@link #callback}</tt> function is executed. Defaults to the browser window.
  * 
  * @cfg {String} easing A valid Ext.lib.Easing value for the effect:</p><div class="mdetail-params"><ul>
  * <li><b><tt>backBoth</tt></b></li>
