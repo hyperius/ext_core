@@ -580,8 +580,7 @@ el.un('click', this.handlerFn);
      */
     removeAllListeners : function(){
         var me = this;
-        me.removeAnchor();
-        Ext.EventManager.removeAll(me.dom);
+        Ext.EventManager.removeAll(this.dom);
         return me;
     },
 
