@@ -579,9 +579,8 @@ el.un('click', this.handlerFn);
      * @return {Ext.Element} this
      */
     removeAllListeners : function(){
-        var me = this;
         Ext.EventManager.removeAll(this.dom);
-        return me;
+        return this;
     },
 
     /**
