@@ -579,8 +579,10 @@ el.un('click', this.handlerFn);
      * @return {Ext.Element} this
      */
     removeAllListeners : function(){
-        Ext.EventManager.removeAll(this.dom);
-        return this;
+        var me = this;
+        me.removeAnchor();
+        Ext.EventManager.removeAll(me.dom);
+        return me;
     },
 
     /**
@@ -820,7 +822,7 @@ El.data = function(el, key, value){
     if(arguments.length == 2){
         return c[key];    
     }else{
-        c[key] = value;
+        return (c[key] = value);
     }
 };
 
