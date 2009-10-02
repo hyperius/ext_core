@@ -352,7 +352,7 @@ Ext.Ajax.request({
             Ext.fly(frame).set({
                 id: id,
                 name: id,
-                className: 'x-hidden',
+                cls: 'x-hidden',
                 src: Ext.SSL_SECURE_URL // for IE
             });
             doc.body.appendChild(frame);
