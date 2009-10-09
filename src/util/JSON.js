@@ -41,20 +41,23 @@ Ext.util.JSON = new (function(){
             }else {
                 var a = ["{"], b, i, v;
                 for (i in o) {
-                    if(!useHasOwn || o.hasOwnProperty(i)) {
-                        v = o[i];
-                        switch (typeof v) {
-                        case "undefined":
-                        case "function":
-                        case "unknown":
-                            break;
-                        default:
-                            if(b){
-                                a.push(',');
+                    // don't encode DOM objects
+                    if(!o.getElementsByTagName){
+                        if(!useHasOwn || o.hasOwnProperty(i)) {
+                            v = o[i];
+                            switch (typeof v) {
+                            case "undefined":
+                            case "function":
+                            case "unknown":
+                                break;
+                            default:
+                                if(b){
+                                    a.push(',');
+                                }
+                                a.push(doEncode(i), ":",
+                                        v === null ? "null" : doEncode(v));
+                                b = true;
                             }
-                            a.push(doEncode(i), ":",
-                                    v === null ? "null" : doEncode(v));
-                            b = true;
                         }
                     }
                 }
