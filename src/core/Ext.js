@@ -261,7 +261,7 @@ Ext.override(MyClass, {
             if(overrides){
                 var p = origclass.prototype;
                 Ext.apply(p, overrides);
-                if(Ext.isIE && overrides.toString != origclass.toString){
+                if(Ext.isIE && overrides.hasOwnProperty('toString')){
                     p.toString = overrides.toString;
                 }
             }
