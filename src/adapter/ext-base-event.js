@@ -1,23 +1,23 @@
 Ext.lib.Event = function() {
     var loadComplete = false,
-        listeners = [],
-        unloadListeners = [],
+        listeners = {},
+        unloadListeners = {},
         retryCount = 0,
         onAvailStack = [],
         _interval,
         locked = false,
         win = window,
         doc = document,
-        
-        // constants            
+
+        // constants
         POLL_RETRYS = 200,
         POLL_INTERVAL = 20,
         EL = 0,
-        TYPE = 1,
-        FN = 2,
-        WFN = 3,
-        OBJ = 3,
-        ADJ_SCOPE = 4,   
+        TYPE = 0,
+        FN = 1,
+        WFN = 2,
+        OBJ = 2,
+        ADJ_SCOPE = 3,
         SCROLLLEFT = 'scrollLeft',
         SCROLLTOP = 'scrollTop',
         UNLOAD = 'unload',
@@ -48,7 +48,7 @@ Ext.lib.Event = function() {
                 ret = function(){};
             }
             return ret;
-        }(),    
+        }(),
         // private
         doRemove = function(){
             var ret;
@@ -58,7 +58,7 @@ Ext.lib.Event = function() {
                         eventName = MOUSEOVER;
                     } else if (eventName == 'mouseleave') {
                         eventName = MOUSEOUT;
-                    }                        
+                    }
                     el.removeEventListener(eventName, fn, (capture));
                 };
             } else if (win.detachEvent) {
@@ -69,19 +69,19 @@ Ext.lib.Event = function() {
                 ret = function(){};
             }
             return ret;
-        }();        
-        
+        }();
+
     function checkRelatedTarget(e) {
         return !elContains(e.currentTarget, pub.getRelatedTarget(e));
     }
 
     function elContains(parent, child) {
-       if(parent && parent.firstChild){  
+       if(parent && parent.firstChild){
          while(child) {
             if(child === parent) {
                 return true;
             }
-            child = child.parentNode;            
+            child = child.parentNode;
             if(child && (child.nodeType != 1)) {
                 child = null;
             }
@@ -90,44 +90,48 @@ Ext.lib.Event = function() {
         return false;
     }
 
-        
-    // private  
+
+    // private
     function _getCacheIndex(el, eventName, fn) {
-        for(var v, index = -1, len = listeners.length, i = len - 1; i >= 0; --i){
-            v = listeners[i];
-            if (v && v[FN] == fn && v[EL] == el && v[TYPE] == eventName) {
-                index = i;
-                break;
+        var i, len, li;
+        if (listeners[el.id] === undefined) {
+            return -1;
+        }
+        for (i = 0, len = listeners[el.id].length; i < len; ++i) {
+            li = listeners[el.id][i];
+            if (li[TYPE] == eventName && li && li[FN] == fn) {
+                return i;
             }
         }
-        return index;
+        return -1;
     }
-                    
+
     // private
     function _tryPreloadAttach() {
-        var ret = false,                
+        var ret = false,
             notAvail = [],
-            element,
-            tryAgain = !loadComplete || (retryCount > 0);                       
-        
+            element, i, len, v,
+            tryAgain = !loadComplete || (retryCount > 0);
+
         if (!locked) {
             locked = true;
-            
-            Ext.each(onAvailStack, function (v,i,a){
+
+            for (i = 0, len = onAvailStack.length; i < len; i++) {
+                v = onAvailStack[i];
                 if(v && (element = doc.getElementById(v.id))){
                     if(!v.checkReady || loadComplete || element.nextSibling || (doc && doc.body)) {
                         element = v.override ? (v.override === true ? v.obj : v.override) : element;
                         v.fn.call(element, v.obj);
-                        onAvailStack[i] = null;
+                        v = null;
                     } else {
                         notAvail.push(v);
                     }
-                }   
-            });
+                }
+            }
 
             retryCount = (notAvail.length === 0) ? 0 : retryCount - 1;
 
-            if (tryAgain) { 
+            if (tryAgain) {
                 startInterval();
             } else {
                 clearInterval(_interval);
@@ -138,20 +142,20 @@ Ext.lib.Event = function() {
         }
         return ret;
     }
-    
-    // private              
-    function startInterval() {            
-        if(!_interval){                    
+
+    // private
+    function startInterval() {
+        if(!_interval){
             var callback = function() {
                 _tryPreloadAttach();
             };
             _interval = setInterval(callback, POLL_INTERVAL);
         }
     }
-    
-    // private 
+
+    // private
     function getScroll() {
-        var dd = doc.documentElement, 
+        var dd = doc.documentElement,
             db = doc.body;
         if(dd && (dd[SCROLLTOP] || dd[SCROLLLEFT])){
             return [dd[SCROLLLEFT], dd[SCROLLTOP]];
@@ -161,7 +165,7 @@ Ext.lib.Event = function() {
             return [0, 0];
         }
     }
-        
+
     // private
     function getPageCoord (ev, xy) {
         ev = ev.browserEvent || ev;
@@ -178,8 +182,8 @@ Ext.lib.Event = function() {
     }
 
     var pub =  {
-        onAvailable : function(p_id, p_fn, p_obj, p_override) {             
-            onAvailStack.push({ 
+        onAvailable : function(p_id, p_fn, p_obj, p_override) {
+            onAvailStack.push({
                 id:         p_id,
                 fn:         p_fn,
                 obj:        p_obj,
@@ -192,42 +196,59 @@ Ext.lib.Event = function() {
 
 
         addListener: function(el, eventName, fn) {
-            var ret;                
-            el = Ext.getDom(el);                
+            var ret, id = Ext.id(el);
+            el = Ext.getDom(el);
             if (el && fn) {
                 if (UNLOAD == eventName) {
-                    ret = !!(unloadListeners[unloadListeners.length] = [el, eventName, fn]);                    
+                    if (unloadListeners[id] === undefined) {
+                        unloadListeners[id] = [];
+                    }
+                    ret = !!(unloadListeners[id].push([eventName, fn])); //[TYPE, FN]
                 } else {
-                    listeners.push([el, eventName, fn, ret = doAdd(el, eventName, fn, false)]);
+                    if (listeners[id] === undefined){
+                        listeners[id] = [];
+                    }
+                    listeners[id].push([eventName, fn, ret = doAdd(el, eventName, fn, false)]); // [TYPE, FN, WFN]
                 }
             }
             return !!ret;
         },
 
         removeListener: function(el, eventName, fn) {
-            var ret = false,
-                index, 
-                cacheItem;
-
             el = Ext.getDom(el);
 
-            if(!fn) {                   
+            var ret = false,
+                id = el.id,
+                i, index, len, cacheItem, li;
+
+            if(!fn) {
                 ret = this.purgeElement(el, false, eventName);
-            } else if (UNLOAD == eventName) {   
-                Ext.each(unloadListeners, function(v, i, a) {
-                    if( v && v[0] == el && v[1] == eventName && v[2] == fn) {
-                        unloadListeners.splice(i, 1);
+            } else if (UNLOAD == eventName) {
+                if (unloadListeners[id] === undefined) {
+                    return false;
+                }
+                for (i = 0, len = unloadListeners[id].length; i < len; i++) {
+                    li = unloadListeners[id][i];
+                    if (li && li[TYPE] == eventName && li[FN] == fn) {
+                        unloadListeners[id].splice(i, 1);
                         ret = true;
                     }
-                });
-            } else {    
-                index = arguments[3] || _getCacheIndex(el, eventName, fn);
-                cacheItem = listeners[index];
-                
+                }
+                if (!unloadListeners[id].length) {
+                    delete listeners[id];
+                }
+            } else {
+                (arguments[3] === 0) ? index = 0 : index = arguments[3] || _getCacheIndex(el, eventName, fn);
+                cacheItem = listeners[id][index];
+
                 if (el && cacheItem) {
-                    doRemove(el, eventName, cacheItem[WFN], false);     
-                    cacheItem[WFN] = cacheItem[FN] = null;                       
-                    listeners.splice(index, 1);     
+                    doRemove(el, eventName, cacheItem[WFN], false);
+                    delete listeners[id][index][FN];
+                    delete listeners[id][index][TYPE];
+                    listeners[id].splice(index, 1);
+                    if (!listeners[id].length) {
+                        delete listeners[id];
+                    }
                     ret = true;
                 }
             }
@@ -235,7 +256,7 @@ Ext.lib.Event = function() {
         },
 
         getTarget : function(ev) {
-            ev = ev.browserEvent || ev;                
+            ev = ev.browserEvent || ev;
             return this.resolveTextNode(ev.target || ev.srcElement);
         },
 
@@ -255,11 +276,11 @@ Ext.lib.Event = function() {
 
         getRelatedTarget : function(ev) {
             ev = ev.browserEvent || ev;
-            return this.resolveTextNode(ev.relatedTarget || 
+            return this.resolveTextNode(ev.relatedTarget ||
                     (ev.type == MOUSEOUT ? ev.toElement :
                      ev.type == MOUSEOVER ? ev.fromElement : null));
         },
-        
+
         getPageX : function(ev) {
             return getPageCoord(ev, "X");
         },
@@ -269,26 +290,11 @@ Ext.lib.Event = function() {
         },
 
 
-        getXY : function(ev) {                             
+        getXY : function(ev) {
             return [this.getPageX(ev), this.getPageY(ev)];
         },
 
-// Is this useful?  Removing to save space unless use case exists.
-//             getTime: function(ev) {
-//                 ev = ev.browserEvent || ev;
-//                 if (!ev.time) {
-//                     var t = new Date().getTime();
-//                     try {
-//                         ev.time = t;
-//                     } catch(ex) {
-//                         return t;
-//                     }
-//                 }
-
-//                 return ev.time;
-//             },
-
-        stopEvent : function(ev) {                            
+        stopEvent : function(ev) {
             this.stopPropagation(ev);
             this.preventDefault(ev);
         },
@@ -310,7 +316,7 @@ Ext.lib.Event = function() {
                 ev.returnValue = false;
             }
         },
-        
+
         getEvent : function(e) {
             e = e || win.event;
             if (!e) {
@@ -335,89 +341,112 @@ Ext.lib.Event = function() {
 
         _load : function(e) {
             loadComplete = true;
-            var EU = Ext.lib.Event;    
+            var EU = Ext.lib.Event;
             if (Ext.isIE && e !== true) {
         // IE8 complains that _load is null or not an object
         // so lets remove self via arguments.callee
                 doRemove(win, "load", arguments.callee);
             }
-        },            
-        
+        },
+
         purgeElement : function(el, recurse, eventName) {
-            var me = this;
-            Ext.each( me.getListeners(el, eventName), function(v){
-                if(v){
-                    me.removeListener(el, v.type, v.fn, v.index);
+            var me = this,
+                i, l, v, len;
+            l = me.getListeners(el, eventName);
+            for (i = 0, len = l.length; i < len; i++) {
+                v = l[i];
+                if(v) {
+                    me.removeListener(el, v.type, v.fn, v.idx);
                 }
-            });
+            }
 
             if (recurse && el && el.childNodes) {
-                Ext.each(el.childNodes, function(v){
-                    me.purgeElement(v, recurse, eventName);
-                });
+                for (i = 0, len = el.childNodes.length; i < len; i++) {
+                    me.purgeElement(el.childNodes[i], recurse, eventName);
+                }
             }
+        },
+
+        getAllListeners : function() {
+            return [ listeners, unloadListeners ];
         },
 
         getListeners : function(el, eventName) {
             var me = this,
-                results = [], 
-                searchLists;
+                results = [],
+                id = el.id,
+                j, i, l, searchLists, searchList;
 
-            if (eventName){  
-                searchLists = eventName == UNLOAD ? unloadListeners : listeners;
+            if (eventName){
+                searchLists = eventName == UNLOAD ? [ unloadListeners ] : [ listeners ];
             }else{
-                searchLists = listeners.concat(unloadListeners);
+                searchLists = [ listeners, unloadListeners ];
             }
 
-            Ext.each(searchLists, function(v, i){
-                if (v && v[EL] == el && (!eventName || eventName == v[TYPE])) {
-                    results.push({
-                                type:   v[TYPE],
-                                fn:     v[FN],
-                                obj:    v[OBJ],
-                                adjust: v[ADJ_SCOPE],
-                                index:  i
+            for (j = 0; j < searchLists.length; j++) {
+                searchList = searchLists[j];
+                if (searchList[id] !== undefined) {
+                    for (i = 0,len = searchList[id].length; i < len; i++) {
+                        l = searchList[id][i];
+                        if (l &&
+                            (!eventName || eventName === l[0])) {
+                            results.push({
+                                type:   l[TYPE],
+                                fn:     l[FN],
+                                obj:    l[OBJ],
+                                adjust: l[ADJ_SCOPE],
+                                idx: i
                             });
-                }   
-            });                
+                        }
+                    }
+                }
+            };
 
             return results.length ? results : null;
         },
 
         _unload : function(e) {
-             var EU = Ext.lib.Event, 
-                i, 
-                j, 
-                l, 
-                len, 
-                index,
-                scope;
-                
+             var EU = Ext.lib.Event,
+                i, j, l, v, ul, id, len, index, scope;
 
-            Ext.each(unloadListeners, function(v) {
-                if (v) {
-                    try{
-                        scope =  v[ADJ_SCOPE] ? (v[ADJ_SCOPE] === true ? v[OBJ] : v[ADJ_SCOPE]) :  win; 
-                        v[FN].call(scope, EU.getEvent(e), v[OBJ]);
-                    }catch(ex){}
-                }   
-            });     
+
+            for (id in unloadListeners) {
+                ul = unloadListeners[id];
+                for (i = 0, len = ul.length; i < len; i++) {
+                    v = ul[i];
+                    if (v) {
+                        try{
+                            scope = v[ADJ_SCOPE] ? (v[ADJ_SCOPE] === true ? v[OBJ] : v[ADJ_SCOPE]) :  win;
+                            v[FN].call(scope, EU.getEvent(e), v[OBJ]);
+                        }catch(ex){}
+                    }
+                }
+            };
 
             unloadListeners = null;
 
-            if(listeners && (j = listeners.length)){                    
-                while(j){                        
-                    if((l = listeners[index = --j])){
-                        EU.removeListener(l[EL], l[TYPE], l[FN], index);
-                    }                        
+            if (listeners && listeners.length > 0) {
+               for (id in listeners) {
+                  if (!listeners.hasOwnProperty(id)) continue;
+                  j = listeners[id].length;
+                  while (j) {
+                      index = j - 1;
+                      l = listeners[id][index];
+                      if (l) {
+                          EU.removeListener(id, l[TYPE], l[FN], index);
+                      }
+                      j = j - 1;
+                  }
+                  l = null;
                 }
-                //EU.clearCache();
+
+                EU.clearCache();
             }
 
             doRemove(win, UNLOAD, EU._unload);
-        }            
-    };        
-    
+        }
+    };
+
     // Initialize stuff.
     pub.on = pub.addListener;
     pub.un = pub.removeListener;
@@ -426,8 +455,8 @@ Ext.lib.Event = function() {
     } else {
         doAdd(win, "load", pub._load);
     }
-    doAdd(win, UNLOAD, pub._unload);    
+    doAdd(win, UNLOAD, pub._unload);
     _tryPreloadAttach();
-    
+
     return pub;
 }();
