@@ -564,7 +564,7 @@ el.frame("C3DAF9", 1, {
             active;
 
         me.queueFx(o, function(){
-            color = color || '#C3DAF9'
+            color = color || '#C3DAF9';
             if(color.length == 6){
                 color = '#' + color;
             }            
