@@ -353,7 +353,7 @@ Ext.DomQuery = function(){
         if(!len1){
             return c2;
         }
-        if(isIE && c1[0].selectSingleNode){
+        if(isIE && typeof c1[0].selectSingleNode != "undefined"){
             return quickDiffIEXml(c1, c2);
         }        
         for(var i = 0; i < len1; i++){
