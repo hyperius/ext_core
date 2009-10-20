@@ -352,7 +352,7 @@ Ext.lib.Event = function() {
         purgeElement : function(el, recurse, eventName) {
             var me = this,
                 i, l, v, len;
-            l = me.getListeners(el, eventName);
+            l = me.getListeners(el, eventName) || [];
             for (i = 0, len = l.length; i < len; i++) {
                 v = l[i];
                 if(v) {
