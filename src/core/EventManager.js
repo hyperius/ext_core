@@ -252,7 +252,7 @@ Ext.EventManager = function(){
          */
         removeListener : function(element, eventName, fn, scope){
             var el = Ext.getDom(element),
-                f = (elHash[el.id] || {})[eventName] || [],
+                f = el && (elHash[el.id] || {})[eventName] || [],
                 wrap, i, l, k;
 
 
