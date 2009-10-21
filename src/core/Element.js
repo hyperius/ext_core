@@ -855,11 +855,20 @@ function garbageCollect(){
             // directly, but somewhere up the line they have an orphan
             // parent.
             // -------------------------------------------------------
+
             if(!d || !d.parentNode || (!d.offsetParent && !DOC.getElementById(eid))){
                 delete El.cache[eid];
+                delete El.dataCache[eid];
                 if(d && Ext.enableListenerCollection){
                     Ext.EventManager.removeAll(d);
                 }
+            }
+        }
+        for(eid in El.dataCache){
+            el = El.dataCache[eid];
+            d = el.dom;
+            if(!d || !d.parentNode || (!d.offsetParent && !DOC.getElementById(eid))){
+                delete El.dataCache[eid];
             }
         }
     }
