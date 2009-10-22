@@ -109,12 +109,13 @@ Ext.EventManager = function(){
         };
     };
 
-    function createBuffered(h, o){
-        var task = new Ext.util.DelayedTask(h);
-        return function(e){
+    function createBuffered(h, o, fn){
+        fn.task = new Ext.util.DelayedTask(h);
+        var w = function(e){
             // create new event object impl so new events don't wipe out properties
-            task.delay(o.buffer, h, null, [new Ext.EventObjectImpl(e)]);
+            fn.task.delay(o.buffer, h, null, [new Ext.EventObjectImpl(e)]);
         };
+        return w;
     };
 
     function createSingle(h, el, ename, fn, scope){
@@ -124,13 +125,14 @@ Ext.EventManager = function(){
         };
     };
 
-    function createDelayed(h, o){
+    function createDelayed(h, o, fn){
         return function(e){
-            // create new event object impl so new events don't wipe out properties
-            e = new Ext.EventObjectImpl(e);
-            setTimeout(function(){
-                h(e);
-            }, o.delay || 10);
+            var task = new Ext.util.DelayedTask(h);
+            if(!fn.tasks) {
+                fn.tasks = [];
+            }
+            fn.tasks.push(task);
+            task.delay(o.delay || 10, h, null, [new Ext.EventObjectImpl(e)]);
         };
     };
 
@@ -177,13 +179,13 @@ Ext.EventManager = function(){
             h = createTargeted(h, o);
         }
         if(o.delay){
-            h = createDelayed(h, o);
+            h = createDelayed(h, o, fn);
         }
         if(o.single){
             h = createSingle(h, el, ename, fn, scope);
         }
         if(o.buffer){
-            h = createBuffered(h, o);
+            h = createBuffered(h, o, fn);
         }
 
         addListener(el, ename, fn, h, scope);
@@ -258,6 +260,17 @@ Ext.EventManager = function(){
 
             for (i = 0, len = f.length; i < len; i++) {
                 if (Ext.isArray(f[i]) && f[i][0] == fn && (!scope || f[i][2] == scope)) {
+                    if(fn.task) {
+                        fn.task.cancel();
+                        delete fn.task;
+                    }
+                    k = fn.tasks && fn.tasks.length;
+                    if(k) {
+                        while(k--) {
+                            fn.tasks[k].cancel();
+                        }
+                        delete fn.tasks;
+                    }
                     E.un(el, eventName, wrap = f[i][1]);
                     f.splice(i,1);
                     if (f.length === 0) {
@@ -293,12 +306,23 @@ Ext.EventManager = function(){
             }
             var id = el.id,
                 es = elHash[id],
-                f, i, len, ename;
+                f, i, len, ename, fn, k;
 
             for(ename in es){
                 if(es.hasOwnProperty(ename)){
                     f = es[ename];
                     for (i = 0, len = f.length; i < len; i++) {
+                        fn = f[i][0];
+                        if(fn.task) {
+                            fn.task.cancel();
+                            delete fn.task;
+                        }
+                        if(fn.tasks && (k = fn.tasks.length)) {
+                            while(k--) {
+                                fn.tasks[k].cancel();
+                            }
+                            delete fn.tasks;
+                        }                    
                         E.un(el, ename, f[i].wrap);
                     };
                 }
