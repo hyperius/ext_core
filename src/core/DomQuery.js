@@ -78,7 +78,6 @@ Ext.DomQuery = function(){
 	    // IE runs the same speed using setAttribute, however FF slows way down
 	    // and Safari completely fails so they need to continue to use expandos.
 	    isIE = window.ActiveXObject ? true : false,
-        isOpera = Ext.isOpera,
 	    key = 30803;
 	    
     // this eval is stop the compressor from
@@ -173,7 +172,7 @@ Ext.DomQuery = function(){
         }else if(mode == "/" || mode == ">"){
             var utag = tagName.toUpperCase();
             for(var i = 0, ni, cn; ni = ns[i]; i++){
-                cn = isOpera ? ni.childNodes : (ni.children || ni.childNodes);
+                cn = ni.childNodes;
                 for(var j = 0, cj; cj = cn[j]; j++){
                     if(cj.nodeName == utag || cj.nodeName == tagName  || tagName == '*'){
                         result[++ri] = cj;
