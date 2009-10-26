@@ -112,21 +112,22 @@ El.prototype = {
     set : function(o, useSet){
         var el = this.dom,
             attr,
-            val;        
-       
+            val,
+            useSet = (useSet !== false) && !!el.setAttribute;
+
         for(attr in o){
-            val = o[attr];
-            if (attr != "style" && !Ext.isFunction(val)) {
-                if (attr == "cls" ) {
+            if (o.hasOwnProperty(attr)) {
+                val = o[attr];
+                if (attr == 'style') {
+                    DH.applyStyles(el, val);
+                } else if (attr == 'cls') {
                     el.className = val;
-                } else if (o.hasOwnProperty(attr)) {
-                    if (useSet || !!el.setAttribute) el.setAttribute(attr, val);
-                    else el[attr] = val;
+                } else if (useSet) {
+                    el.setAttribute(attr, val);
+                } else {
+                    el[attr] = val;
                 }
             }
-        }
-        if(o.style){
-            DH.applyStyles(el, o.style);
         }
         return this;
     },
