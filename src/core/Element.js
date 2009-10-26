@@ -829,7 +829,7 @@ El.data = function(el, key, value){
 // so we don't hold a reference and cause the browser to retain them
 function garbageCollect(){
     if(!Ext.enableGarbageCollector){
-        clearInterval(El.collectorThread);
+        clearInterval(El.collectorThreadId);
     } else {
         var eid,
             el,
@@ -865,9 +865,8 @@ function garbageCollect(){
             }
         }
         for(eid in El.dataCache){
-            el = El.dataCache[eid];
-            d = el.dom;
-            if(!d || !d.parentNode || (!d.offsetParent && !DOC.getElementById(eid))){
+            el = El.cache[eid];
+            if(!el || !el.dom || !el.dom.parentNode || (!el.dom.offsetParent && !DOC.getElementById(eid))){
                 delete El.dataCache[eid];
             }
         }
