@@ -347,9 +347,8 @@
 	                o.conn.abort();
 	                clearInterval(me.poll[tId]);
 	               	me.poll[tId] = null;
-	                if (isTimeout) {
-	                    me.timeout[tId] = null;
-	                }
+                    clearTimeout(pub.timeout[tId]);
+                    me.timeout[tId] = null;
 					
 	                handleTransactionResponse(o, callback, (isAbort = true), isTimeout);                
 	            }
