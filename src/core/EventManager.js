@@ -333,20 +333,21 @@ Ext.EventManager = function(){
             }
         },
 
-        // This functionality of recurse and eventName is inconsistent across adapters is used from lib.Event.
-        // The API will change to be consistent and most liekly drop eventName
         purgeElement : function(el, recurse, eventName) {
+            el = Ext.getDom(el);
             var id = el.id,
                 es = elHash[id],
-                ename, i, f, len;
-
-            if (es.hasOwnProperty(ename)) {
-                f = es[ename];
-                for (i = 0, len = f.length; i < len; i++) {
-                    Ext.EventManager.removeListener(el, ename, f[i][0]);
+                i, f, len;
+            if (eventName) {
+                if (es.hasOwnProperty(eventName)) {
+                    f = es[eventName];
+                    for (i = 0, len = f.length; i < len; i++) {
+                        Ext.EventManager.removeListener(el, eventName, f[i][0]);
+                    }
                 }
+            } else {
+                Ext.EventManager.removeAll(el);
             }
-
             if (recurse && el && el.childNodes) {
                 for (i = 0, len = el.childNodes.length; i < len; i++) {
                     Ext.EventManager.purgeElement(el.childNodes[i], recurse, eventName);
