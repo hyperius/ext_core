@@ -1,6 +1,5 @@
 Ext.lib.Event = function() {
     var loadComplete = false,
-        listeners = {},
         unloadListeners = {},
         retryCount = 0,
         onAvailStack = [],
@@ -90,22 +89,6 @@ Ext.lib.Event = function() {
         return false;
     }
 
-
-    // private
-    function _getCacheIndex(el, eventName, fn) {
-        var i, len, li;
-        if (listeners[el.id] === undefined) {
-            return -1;
-        }
-        for (i = 0, len = listeners[el.id].length; i < len; ++i) {
-            li = listeners[el.id][i];
-            if (li[TYPE] == eventName && li && li[FN] == fn) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     // private
     function _tryPreloadAttach() {
         var ret = false,
@@ -182,6 +165,7 @@ Ext.lib.Event = function() {
     }
 
     var pub =  {
+        extAdapter: true,
         onAvailable : function(p_id, p_fn, p_obj, p_override) {
             onAvailStack.push({
                 id:         p_id,
@@ -194,65 +178,40 @@ Ext.lib.Event = function() {
             startInterval();
         },
 
-
+        // This function should ALWAYS be called from Ext.EventManager
         addListener: function(el, eventName, fn) {
-            var ret, id = Ext.id(el);
             el = Ext.getDom(el);
             if (el && fn) {
-                if (UNLOAD == eventName) {
+                if (eventName == UNLOAD) {
                     if (unloadListeners[id] === undefined) {
                         unloadListeners[id] = [];
                     }
-                    ret = !!(unloadListeners[id].push([eventName, fn])); //[TYPE, FN]
-                } else {
-                    if (listeners[id] === undefined){
-                        listeners[id] = [];
-                    }
-                    listeners[id].push([eventName, fn, ret = doAdd(el, eventName, fn, false)]); // [TYPE, FN, WFN]
+                    unloadListeners[id].push([eventName, fn]);
+                    return fn;
                 }
+                return doAdd(el, eventName, fn, false);
             }
-            return !!ret;
+            return false;
         },
 
+        // This function should ALWAYS be called from Ext.EventManager
         removeListener: function(el, eventName, fn) {
             el = Ext.getDom(el);
-
-            var ret = false,
-                id = el.id,
-                i, index, len, cacheItem, li;
-
-            if(!fn) {
-                ret = this.purgeElement(el, false, eventName);
-            } else if (UNLOAD == eventName) {
-                if (unloadListeners[id] === undefined) {
-                    return false;
-                }
-                for (i = 0, len = unloadListeners[id].length; i < len; i++) {
-                    li = unloadListeners[id][i];
-                    if (li && li[TYPE] == eventName && li[FN] == fn) {
-                        unloadListeners[id].splice(i, 1);
-                        ret = true;
+            var i, len, li;
+            if (el && fn) {
+                if (eventName == UNLOAD) {
+                    if (unloadListeners[id] !== undefined) {
+                        for (i = 0, len = unloadListeners[id].length; i < len; i++) {
+                            li = unloadListeners[id][i];
+                            if (li && li[TYPE] == eventName && li[FN] == fn) {
+                                unloadListeners[id].splice(i, 1);
+                            }
+                        }
                     }
+                    return;
                 }
-                if (!unloadListeners[id].length) {
-                    delete listeners[id];
-                }
-            } else {
-                (arguments[3] === 0) ? index = 0 : index = arguments[3] || _getCacheIndex(el, eventName, fn);
-                cacheItem = listeners[id][index];
-
-                if (el && cacheItem) {
-                    doRemove(el, eventName, cacheItem[WFN], false);
-                    delete listeners[id][index][FN];
-                    delete listeners[id][index][TYPE];
-                    listeners[id].splice(index, 1);
-                    if (!listeners[id].length) {
-                        delete listeners[id];
-                    }
-                    ret = true;
-                }
+                doRemove(el, eventName, fn, false);
             }
-            return ret;
         },
 
         getTarget : function(ev) {
@@ -338,6 +297,15 @@ Ext.lib.Event = function() {
         },
 
         //clearCache: function() {},
+        // deprecated, call from EventManager
+        getListeners : function(el, eventName) {
+            Ext.EventManager.getListeners(el, eventName);
+        },
+
+        // deprecated, call from EventManager
+        purgeElement : function(el, recurse, eventName) {
+            Ext.EventManager.purgeElement(el, recurse, eventName);
+        },
 
         _load : function(e) {
             loadComplete = true;
@@ -347,62 +315,6 @@ Ext.lib.Event = function() {
         // so lets remove self via arguments.callee
                 doRemove(win, "load", arguments.callee);
             }
-        },
-
-        purgeElement : function(el, recurse, eventName) {
-            var me = this,
-                i, l, v, len;
-            l = me.getListeners(el, eventName) || [];
-            for (i = 0, len = l.length; i < len; i++) {
-                v = l[i];
-                if(v) {
-                    me.removeListener(el, v.type, v.fn, v.idx);
-                }
-            }
-
-            if (recurse && el && el.childNodes) {
-                for (i = 0, len = el.childNodes.length; i < len; i++) {
-                    me.purgeElement(el.childNodes[i], recurse, eventName);
-                }
-            }
-        },
-
-        getAllListeners : function() {
-            return [ listeners, unloadListeners ];
-        },
-
-        getListeners : function(el, eventName) {
-            var me = this,
-                results = [],
-                id = el.id,
-                j, i, l, searchLists, searchList;
-
-            if (eventName){
-                searchLists = eventName == UNLOAD ? [ unloadListeners ] : [ listeners ];
-            }else{
-                searchLists = [ listeners, unloadListeners ];
-            }
-
-            for (j = 0; j < searchLists.length; j++) {
-                searchList = searchLists[j];
-                if (searchList[id] !== undefined) {
-                    for (i = 0,len = searchList[id].length; i < len; i++) {
-                        l = searchList[id][i];
-                        if (l &&
-                            (!eventName || eventName === l[0])) {
-                            results.push({
-                                type:   l[TYPE],
-                                fn:     l[FN],
-                                obj:    l[OBJ],
-                                adjust: l[ADJ_SCOPE],
-                                idx: i
-                            });
-                        }
-                    }
-                }
-            };
-
-            return results.length ? results : null;
         },
 
         _unload : function(e) {
@@ -424,24 +336,7 @@ Ext.lib.Event = function() {
             };
 
             unloadListeners = null;
-
-            if (listeners && listeners.length > 0) {
-               for (id in listeners) {
-                  if (!listeners.hasOwnProperty(id)) continue;
-                  j = listeners[id].length;
-                  while (j) {
-                      index = j - 1;
-                      l = listeners[id][index];
-                      if (l) {
-                          EU.removeListener(id, l[TYPE], l[FN], index);
-                      }
-                      j = j - 1;
-                  }
-                  l = null;
-                }
-
-                EU.clearCache();
-            }
+            Ext.EventManager._unload();
 
             doRemove(win, UNLOAD, EU._unload);
         }

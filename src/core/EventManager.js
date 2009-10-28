@@ -1,15 +1,3 @@
-/*!
- * Ext JS Library 3.0+
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-/*!
- * Ext JS Library 3.0+
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
 /**
  * @class Ext.EventManager
  * Registers event handlers that want to receive a normalized EventObject instead of the standard browser event and provides
@@ -33,18 +21,19 @@ Ext.EventManager = function(){
     /// There is some jquery work around stuff here that isn't needed in Ext Core.
     function addListener(el, ename, fn, wrap, scope){
         var id = Ext.id(el),
-            es = elHash[id] = elHash[id] || {};
+            es = elHash[id] = elHash[id] || {},
+            wfn;
 
+        wfn = E.on(el, ename, wrap);
         es[ename] = es[ename] || [];
-        es[ename].push([fn, wrap, scope]);
-        E.on(el, ename, wrap);
+        es[ename].push([fn, wrap, scope, wfn]);
 
         // this is a workaround for jQuery and should somehow be removed from Ext Core in the future
         // without breaking ExtJS.
         if(ename == "mousewheel" && el.addEventListener){ // workaround for jQuery
             var args = ["DOMMouseScroll", wrap, false];
             el.addEventListener.apply(el, args);
-            E.on(window, 'unload', function(){
+            Ext.EventManager.addListener(window, 'unload', function(){
                 el.removeEventListener.apply(el, args);
             });
         }
@@ -255,8 +244,7 @@ Ext.EventManager = function(){
         removeListener : function(element, eventName, fn, scope){
             var el = Ext.getDom(element),
                 f = el && (elHash[el.id] || {})[eventName] || [],
-                wrap, i, l, k;
-
+                wrap, i, l, k, wf;
 
             for (i = 0, len = f.length; i < len; i++) {
                 if (Ext.isArray(f[i]) && f[i][0] == fn && (!scope || f[i][2] == scope)) {
@@ -271,7 +259,11 @@ Ext.EventManager = function(){
                         }
                         delete fn.tasks;
                     }
-                    E.un(el, eventName, wrap = f[i][1]);
+                    wf = wrap = f[i][1];
+                    if (E.extAdapter) {
+                        wf = f[i][3];
+                    }
+                    E.un(el, eventName, wf);
                     f.splice(i,1);
                     if (f.length === 0) {
                         delete elHash[el.id][eventName];
@@ -282,7 +274,7 @@ Ext.EventManager = function(){
                     delete elHash[el.id];
                     return false;
                 }
-            };
+            }
 
             // jQuery workaround that should be removed from Ext Core
             if(eventName == "mousewheel" && el.addEventListener && wrap){
@@ -322,12 +314,51 @@ Ext.EventManager = function(){
                                 fn.tasks[k].cancel();
                             }
                             delete fn.tasks;
-                        }                    
-                        E.un(el, ename, f[i].wrap);
-                    };
+                        }
+                        E.un(el, ename, E.extAdapter ? f[i][3] : f[i][1]);
+                    }
                 }
             }
             delete elHash[id];
+        },
+
+        getListeners : function(el, eventName) {
+            var id = el.id,
+                es = elHash[id],
+                results = [];
+            if (es && es[eventName]) {
+                return es[eventName];
+            } else {
+                return null;
+            }
+        },
+
+        // This functionality of recurse and eventName is inconsistent across adapters is used from lib.Event.
+        // The API will change to be consistent and most liekly drop eventName
+        purgeElement : function(el, recurse, eventName) {
+            var id = el.id,
+                es = elHash[id],
+                ename, i, f, len;
+
+            if (es.hasOwnProperty(ename)) {
+                f = es[ename];
+                for (i = 0, len = f.length; i < len; i++) {
+                    Ext.EventManager.removeListener(el, ename, f[i][0]);
+                }
+            }
+
+            if (recurse && el && el.childNodes) {
+                for (i = 0, len = el.childNodes.length; i < len; i++) {
+                    Ext.EventManager.purgeElement(el.childNodes[i], recurse, eventName);
+                }
+            }
+        },
+
+        _unload : function() {
+            var el;
+            for (el in elHash) {
+                Ext.EventManager.removeAll(el);
+            }
         },
         /**
          * Adds a listener to be notified when the document is ready (before onload and before images are loaded). Can be
