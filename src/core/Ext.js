@@ -566,7 +566,7 @@ function(el){
          * @return {Boolean}
          */
         isObject : function(v){
-            return v && typeof v == "object";
+            return Object.prototype.toString.call(o) === '[object Object]';
         },
 
         /**
@@ -612,6 +612,15 @@ function(el){
          */
         isBoolean : function(v){
             return typeof v === 'boolean';
+        },
+        
+        /**
+         * Returns true if the passed value is an HTMLElement
+         * @param {Mixed} value The value to test
+         * @return {Boolean}
+         */        
+        isElement : function(v) {
+            return !!v && v.tagName;
         },
 
         /**
