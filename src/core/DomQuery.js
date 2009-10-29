@@ -516,9 +516,11 @@ Ext.DomQuery = function(){
             if(!valueCache[path]){
                 valueCache[path] = Ext.DomQuery.compile(path, "select");
             }
-            var n = valueCache[path](root),
-            	v;
+            var n = valueCache[path](root), v;
             n = n[0] ? n[0] : n;
+            
+            if (typeof n.normalize == 'function') n.normalize();
+            
             v = (n && n.firstChild ? n.firstChild.nodeValue : null);
             return ((v === null||v === undefined||v==='') ? defaultValue : v);
         },

@@ -280,9 +280,11 @@ this.addEvents('storeloaded', 'storecleared');
         var me = this;
         me.events = me.events || {};
         if (Ext.isString(o)) {
-            EACH(arguments, function(a) {
-                me.events[a] = me.events[a] || TRUE;
-            });
+            var a = arguments,
+                i = a.length;
+            while(i--) {
+                me.events[a[i]] = me.events[a[i]] || TRUE;
+            }
         } else {
             Ext.applyIf(me.events, o);
         }
@@ -430,16 +432,18 @@ EXTUTIL.Event.prototype = {
     },
 
     findListener : function(fn, scope){
-        var s, ret = -1;
-        EACH(this.listeners, function(l, i) {
-            s = l.scope;
-            if(l.fn == fn && (s == scope || s == this.obj)){
-                ret = i;
-                return FALSE;
+        var list = this.listeners,
+            i = list.length, l;        
+        while(i--) {
+            l = list[i];
+            if(l) {
+                s = l.scope;
+                if(l.fn == fn && (s == scope || s == this.obj)){
+                    return i;
+                }                
             }
-        },
-        this);
-        return ret;
+        }
+        return -1;
     },
 
     isListening : function(fn, scope){
@@ -467,16 +471,15 @@ EXTUTIL.Event.prototype = {
     fire : function(){
         var me = this,
             args = TOARRAY(arguments),
-            ret = TRUE;
-
-        EACH(me.listeners, function(l) {
-            me.firing = TRUE;
-            if (l.fireFn.apply(l.scope || me.obj || window, args) === FALSE) {
-                return ret = me.firing = FALSE;
+            l;
+        for (var i=0, len=me.listeners.length; i < len; i++) {
+            l = me.listeners[i];
+            if(l && l.fireFn.apply(l.scope || me.obj || window, args) === FALSE) {
+                return me.firing = false;
             }
-        });
-        me.firing = FALSE;
-        return ret;
+        };
+        me.firing = false;
+        return true;
     }
 };
 })();

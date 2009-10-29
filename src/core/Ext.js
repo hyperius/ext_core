@@ -371,9 +371,10 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
             return isIE ?
                 function(a, i, j, res){
                     res = [];
-                    Ext.each(a, function(v) {
-                        res.push(v);
-                    });
+                    var i = a.length;
+                    while(i) {
+                        ret[--i] = a[i];
+                    }
                     return res.slice(i || 0, j || res.length);
                 } :
                 function(a, i, j){

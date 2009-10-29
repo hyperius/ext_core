@@ -70,10 +70,14 @@ Ext.Element.addMethods(function(){
          * @return {Ext.Element} this
          */
         addClass : function(className){
-            var me = this;
-            Ext.each(className, function(v) {
-                me.dom.className += (!me.hasClass(v) && v ? " " + v : "");  
-            });
+            var me = this, i, len, v;
+            className = Ext.isArray(className) ? className : [className];
+            for (i=0, len = className.length; i < len; i++) {
+                v = className[i];
+                if (v) {
+                    me.dom.className += (!me.hasClass(v) && v ? " " + v : "");  
+                };
+            };
             return me;
         },
     
@@ -83,11 +87,14 @@ Ext.Element.addMethods(function(){
          * @return {Ext.Element} this
          */
         radioClass : function(className){
-            Ext.each(this.dom.parentNode.childNodes, function(v) {
-                if(v.nodeType == 1) {
+            var cn = this.dom.parentNode.childNodes, v;
+            className = Ext.isArray(className) ? className : [className];
+            for (var i=0, len = cn.length; i < len; i++) {
+                v = cn[i];
+                if(v && v.nodeType == 1) {
                     Ext.fly(v, '_internal').removeClass(className);          
                 }
-            });
+            };
             return this.addClass(className);
         },
     
@@ -97,13 +104,17 @@ Ext.Element.addMethods(function(){
          * @return {Ext.Element} this
          */
         removeClass : function(className){
-            var me = this;
+            var me = this, v;
+            className = Ext.isArray(className) ? className : [className];
             if (me.dom && me.dom.className) {
-                Ext.each(className, function(v) {               
-                    me.dom.className = me.dom.className.replace(
-                        classReCache[v] = classReCache[v] || new RegExp('(?:^|\\s+)' + v + '(?:\\s+|$)', "g"), 
-                        " ");               
-                });    
+                for (var i=0, len=className.length; i < len; i++) {
+                    v = className[i];
+                    if(v) {
+                        me.dom.className = me.dom.className.replace(
+                            classReCache[v] = classReCache[v] || new RegExp('(?:^|\\s+)' + v + '(?:\\s+|$)', "g"), " "
+                        );                        
+                    }
+                };
             }
             return me;
         },
@@ -424,14 +435,15 @@ Ext.fly('elId').setHeight(150, {
 
         // private
         addStyles : function(sides, styles){
-            var val = 0;
-
-            Ext.each(sides.match(/\w/g), function(s) {
-                if (s = parseInt(this.getStyle(styles[s]), 10)) {
+            var val = 0, 
+                m = sides.match(/\w/g), 
+                s;
+            for (var i=0, len=m.length; i<len; i++) {
+                s = m[i] && parseInt(this.getStyle(styles[m[i]]), 10);
+                if (s) {
                     val += MATH.abs(s);
                 }
-            },
-            this);
+            }
             return val;
         },
 

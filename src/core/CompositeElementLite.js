@@ -67,21 +67,28 @@ Ext.CompositeElementLite.prototype = {
             if (Ext.isArray(els)) {
                 this.elements = this.elements.concat(els);
             } else {
-                var yels = this.elements;                                    
-                Ext.each(els, function(e) {
-                    yels.push(e);
-                });
+                var yels = this.elements, i, len = els.length;
+                for(i = 0; i<len; i++) {
+                    if(!els[i]) continue;
+                    yels.push(els[i]);
+                }
             }
         }
         return this;
     },
     invoke : function(fn, args){
         var els = this.elements,
-            el = this.el;        
-        Ext.each(els, function(e) {    
-            el.dom = e;
-            Ext.Element.prototype[fn].apply(el, args);
-        });
+            el = this.el,
+            i, len = els.length, e;
+            
+        for(i = 0; i<len; i++) {
+            e = els[i];
+            if(e) {
+                el.dom = e;
+                Ext.Element.prototype[fn].apply(el, args);
+            }
+        }
+        
         return this;
     },
     /**
@@ -100,9 +107,16 @@ Ext.CompositeElementLite.prototype = {
 
     // fixes scope with flyweight
     addListener : function(eventName, handler, scope, opt){
-        Ext.each(this.elements, function(e) {
-            Ext.EventManager.on(e, eventName, handler, scope || e, opt);
-        });
+        var els = this.elements,
+            len = els.length,
+            i, e;
+        
+        for(i = 0; i<len; i++) {
+            e = els[i];
+            if(e) {
+                Ext.EventManager.on(e, eventName, handler, scope || e, opt);
+            }
+        }
         return this;
     },
     /**
@@ -119,12 +133,18 @@ Ext.CompositeElementLite.prototype = {
      */
     each : function(fn, scope){       
         var me = this,
-            el = me.el;
-       
-        Ext.each(me.elements, function(e,i) {    
-            el.dom = e;
-            return fn.call(scope || el, el, me, i);
-        });
+            el = me.el,
+            els = me.elements,
+            len = els.length,
+            i, e;
+        
+        for(i = 0; i<len; i++) {
+            e = els[i];
+            if(e) {
+                el.dom = e;
+                if(fn.call(scope || el, el, me, i)) break;
+            }
+        }
         return me;
     },
     

@@ -224,27 +224,7 @@ Ext.ux.Lightbox = (function(){
             var wDiff = wCur - wNew;
             var hDiff = hCur - hNew;
 
-            var queueLength = 0;
-
-            if (hDiff != 0 || wDiff != 0) {
-                els.outerImageContainer.syncFx()
-                    .shift({
-                        height: hNew,
-                        duration: this.resizeDuration
-                    })
-                    .shift({
-                        width: wNew,
-                        duration: this.resizeDuration
-                    });
-                queueLength++;
-            }
-
-            var timeout = 0;
-            if ((hDiff == 0) && (wDiff == 0)) {
-                timeout = (Ext.isIE) ? 250 : 100;
-            }
-
-            (function(){
+            var afterResize = function(){
                 els.hoverNav.setWidth(els.imageContainer.getWidth() + 'px');
 
                 els.navPrev.setHeight(h + 'px');
@@ -253,7 +233,21 @@ Ext.ux.Lightbox = (function(){
                 els.outerDataContainer.setWidth(wNew + 'px');
 
                 this.showImage();
-            }).createDelegate(this).defer((this.resizeDuration*1000) + timeout);
+            };
+            
+            if (hDiff != 0 || wDiff != 0) {
+                els.outerImageContainer.shift({
+                    height: hNew,
+                    width: wNew,
+                    duration: this.resizeDuration,
+                    scope: this,
+                    callback: afterResize,
+                    delay: 50
+                });
+            }
+            else {
+                afterResize.call(this);
+            }
         },
 
         showImage: function(){
@@ -280,19 +274,15 @@ Ext.ux.Lightbox = (function(){
                 els.imageNumber.show();
             }
 
-            els.dataContainer.syncFx()
-                .slideIn('t', {
-                    duration: this.resizeDuration/2
-                })
-                .fadeIn({
-                    duration: this.resizeDuration/2,
-                    scope: this,
-                    callback: function() {
-                        var viewSize = this.getViewSize();
-                        els.overlay.setHeight(viewSize[1] + 'px');
-                        this.updateNav();
-                    }
-                })
+            els.dataContainer.fadeIn({
+                duration: this.resizeDuration/2,
+                scope: this,
+                callback: function() {
+                    var viewSize = this.getViewSize();
+                    els.overlay.setHeight(viewSize[1] + 'px');
+                    this.updateNav();
+                }
+            });
         },
 
         updateNav: function(){
