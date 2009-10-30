@@ -80,7 +80,7 @@ Ext.apply = function(o, c, defaults){
          * the IE insecure content warning (<tt>'about:blank'</tt>, except for IE in secure mode, which is <tt>'javascript:""'</tt>).
          * @type String
          */
-        SSL_SECURE_URL : isSecure && isIE ? 'javascript:""' : 'about:blank', 
+        SSL_SECURE_URL : isSecure && isIE ? 'javascript:""' : 'about:blank',
         /**
          * True if the browser is in strict (standards-compliant) mode, as opposed to quirks mode
          * @type Boolean
@@ -110,11 +110,17 @@ Ext.apply = function(o, c, defaults){
         enableGarbageCollector : true,
 
         /**
-         * True to automatically purge event listeners after uncaching an element (defaults to false).
-         * Note: this only happens if {@link #enableGarbageCollector} is true.
+         * True to automatically purge event listeners during garbageCollection (defaults to false).
          * @type Boolean
          */
         enableListenerCollection : false,
+
+        /**
+         * EXPERIMENTAL - True to cascade listener removal to child elements when an element is removed.
+         * Currently not optimized for performance.
+         * @type Boolean
+         */
+        enableNestedListenerRemoval : false,
 
         /**
          * Indicates whether to use native browser parsing for JSON methods.
@@ -613,12 +619,12 @@ function(el){
         isBoolean : function(v){
             return typeof v === 'boolean';
         },
-        
+
         /**
          * Returns true if the passed value is an HTMLElement
          * @param {Mixed} value The value to test
          * @return {Boolean}
-         */        
+         */
         isElement : function(v) {
             return !!v && v.tagName;
         },

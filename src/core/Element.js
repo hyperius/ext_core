@@ -27,7 +27,7 @@ el.setWidth(100);
 // default animation
 el.setWidth(100, true);
  * </code></pre>
- * 
+ *
  * <p>To configure the effects, an object literal with animation options to use as the Element animation
  * configuration object can also be specified. Note that the supported Element animation configuration
  * options are a subset of the {@link Ext.Fx} animation options specific to Fx effects.  The supported
@@ -40,7 +40,7 @@ Option    Default   Description
 {@link Ext.Fx#callback callback}  none      A function to execute when the anim completes
 {@link Ext.Fx#scope scope}     this      The scope (this) of the callback function
 </pre>
- * 
+ *
  * <pre><code>
 // Element animation options object
 var opt = {
@@ -131,7 +131,7 @@ El.prototype = {
         }
         return this;
     },
-    
+
 //  Mouse events
     /**
      * @event click
@@ -203,7 +203,7 @@ El.prototype = {
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-    
+
 //  Keyboard events
     /**
      * @event keypress
@@ -532,7 +532,7 @@ el.on({
     &lt;p id='p2' class='clickable'>paragraph two&lt;/p>
     &lt;p id='p3'>paragraph three&lt;/p>
 &lt;/div>
-// utilize event delegation to registering just one handler on the container element: 
+// utilize event delegation to registering just one handler on the container element:
 el = Ext.get('elId');
 el.on(
     'click',
@@ -543,7 +543,7 @@ el.on(
     this,
     {
         // filter the target element to be a descendant with the class 'clickable'
-        delegate: '.clickable' 
+        delegate: '.clickable'
     }
 );
      * </code></pre></p>
@@ -584,6 +584,14 @@ el.un('click', this.handlerFn);
         return this;
     },
 
+    /**
+     * Recursively removes all previous added listeners from this element and its children
+     * @return {Ext.Element} this
+     */
+    purgeAllListeners : function() {
+        Ext.EventManager.purgeElement(this, true);
+        return this;
+    },
     /**
      * @private Test if size has a unit, otherwise appends the default
      */
@@ -629,8 +637,9 @@ el.un('click', this.handlerFn);
     remove : function(){
         var me = this,
             dom = me.dom;
-        
-        me.removeAllListeners();
+
+        (Ext.enableNestedListenerRemoval) ? me.purgeAllListeners() : me.removeAllListeners();
+
         if (dom) {
             delete me.dom;
             delete El.cache[dom.id];
@@ -671,9 +680,9 @@ el.un('click', this.handlerFn);
      * @deprecated
      */
     getAttributeNS : function(ns, name){
-        return this.getAttribute(name, ns); 
+        return this.getAttribute(name, ns);
     },
-    
+
     /**
      * Returns the value of an attribute from the element's underlying DOM node.
      * @param {String} name The attribute name
@@ -692,7 +701,7 @@ el.un('click', this.handlerFn);
         var d = this.dom;
         return d.getAttributeNS(ns, name) || d.getAttribute(ns + ":" + name) || d.getAttribute(name) || d[name];
     },
-    
+
     /**
     * Update the innerHTML of this element
     * @param {String} html The new HTML
@@ -819,7 +828,7 @@ El.data = function(el, key, value){
         c = El.dataCache[el.id] = {};
     }
     if(arguments.length == 2){
-        return c[key];    
+        return c[key];
     }else{
         return (c[key] = value);
     }
@@ -866,8 +875,7 @@ function garbageCollect(){
             }
         }
         for(eid in El.dataCache){
-            el = El.cache[eid];
-            if(!el || !el.dom || !el.dom.parentNode || (!el.dom.offsetParent && !DOC.getElementById(eid))){
+            if(!El.cache[eid]){
                 delete El.dataCache[eid];
             }
         }
