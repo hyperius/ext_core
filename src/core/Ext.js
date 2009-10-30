@@ -197,7 +197,7 @@ MyGridPanel = Ext.extend(Ext.grid.GridPanel, {
          * prototype, and are therefore shared among all instances of the new class.</div></li>
          * </ul></div>
          *
-         * @param {Function} subclass The constructor of class being extended.
+         * @param {Function} superclass The constructor of class being extended.
          * @param {Object} overrides <p>A literal with members which are copied into the subclass's
          * prototype, and are therefore shared between all instances of the new class.</p>
          * <p>This may contain a special member named <tt><b>constructor</b></tt>. This is used
@@ -205,7 +205,7 @@ MyGridPanel = Ext.extend(Ext.grid.GridPanel, {
          * <i>not</i> specified, a constructor is generated and returned which just calls the
          * superclass's constructor passing on its parameters.</p>
          * <p><b>It is essential that you call the superclass constructor in any provided constructor. See example code.</b></p>
-         * @return {Function} The subclass constructor.
+         * @return {Function} The subclass constructor from the <code>overrides</code> parameter, or a generated one if not provided.
          */
         extend : function(){
             // inline overrides
