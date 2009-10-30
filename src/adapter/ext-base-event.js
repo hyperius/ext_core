@@ -183,10 +183,10 @@ Ext.lib.Event = function() {
             el = Ext.getDom(el);
             if (el && fn) {
                 if (eventName == UNLOAD) {
-                    if (unloadListeners[id] === undefined) {
-                        unloadListeners[id] = [];
+                    if (unloadListeners[el.id] === undefined) {
+                        unloadListeners[el.id] = [];
                     }
-                    unloadListeners[id].push([eventName, fn]);
+                    unloadListeners[el.id].push([eventName, fn]);
                     return fn;
                 }
                 return doAdd(el, eventName, fn, false);
