@@ -572,7 +572,7 @@ function(el){
          * @return {Boolean}
          */
         isObject : function(v){
-            return v && Object.prototype.toString.call(v) === '[object Object]';
+            return !!v && Object.prototype.toString.call(v) === '[object Object]';
         },
 
         /**
