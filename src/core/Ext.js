@@ -373,20 +373,19 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
          * @param {Iterable} the iterable object to be turned into a true Array.
          * @return (Array) array
          */
-        toArray : function(){
-            return isIE ?
-                function(a, i, j, res){
-                    res = [];
-                    var i = a.length;
-                    while(i) {
-                        ret[--i] = a[i];
-                    }
-                    return res.slice(i || 0, j || res.length);
-                } :
-                function(a, i, j){
-                    return Array.prototype.slice.call(a, i || 0, j || a.length);
-                }
-        }(),
+         toArray : function(){
+             return isIE ?
+                 function(a, i, j, res){
+                     res = [];
+                     for(var x = 0, len = a.length; x < len; x++) {
+                         res.push(a[x]);
+                     }
+                     return res.slice(i || 0, j || res.length);
+                 } :
+                 function(a, i, j){
+                     return Array.prototype.slice.call(a, i || 0, j || a.length);
+                 }
+         }(),
 
         isIterable : function(v){
             //check for array or arguments
