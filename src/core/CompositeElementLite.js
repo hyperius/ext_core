@@ -64,18 +64,14 @@ Ext.CompositeElementLite.prototype = {
      */
     add : function(els){
         if(els){
+            els = Ext.isArray(els) ? els : (els.elements ? els.elements : [els]);
             if (Ext.isArray(els)) {
                 this.elements = this.elements.concat(els);
-            } else {
-                var yels = this.elements, i, len = els.length;
-                for(i = 0; i<len; i++) {
-                    if(!els[i]) continue;
-                    yels.push(els[i]);
-                }
             }
         }
         return this;
     },
+    
     invoke : function(fn, args){
         var els = this.elements,
             el = this.el,
