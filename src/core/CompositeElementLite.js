@@ -65,9 +65,7 @@ Ext.CompositeElementLite.prototype = {
     add : function(els){
         if(els){
             els = Ext.isArray(els) ? els : (els.elements ? els.elements : [els]);
-            if (Ext.isArray(els)) {
-                this.elements = this.elements.concat(els);
-            }
+            this.elements = this.elements.concat(els);
         }
         return this;
     },
