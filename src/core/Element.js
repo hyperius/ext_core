@@ -632,7 +632,9 @@ el.un('click', this.handlerFn);
     },
 
     /**
-     * Removes this element from the DOM and deletes it from the cache
+     * <p>Removes this element from the DOM and deletes it from the cache.</p>
+     * <p>All DOM event listeners are removed from this element. If {@link Ext#enableNestedListenerRemoval} is
+     * <code>true</code>, then DOM event listeners are also removed from all descendant elements.</p>
      */
     remove : function(){
         var me = this,
