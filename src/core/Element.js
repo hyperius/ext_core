@@ -79,8 +79,8 @@ Ext.Element = function(element, forceNew){
 
     id = dom.id;
 
-    if(!forceNew && id && Ext.Element.cache[id]){ // element object already exists
-        return Ext.Element.cache[id];
+    if(!forceNew && id && Ext.elCache[id]){ // element object already exists
+        return Ext.elCache[id].el;
     }
 
     /**
@@ -100,7 +100,8 @@ var D = Ext.lib.Dom,
     DH = Ext.DomHelper,
     E = Ext.lib.Event,
     A = Ext.lib.Anim,
-    El = Ext.Element;
+    El = Ext.Element,
+    EC = Ext.elCache;
 
 El.prototype = {
     /**
@@ -644,9 +645,8 @@ el.un('click', this.handlerFn);
 
         if (dom) {
             delete me.dom;
-            delete El.cache[dom.id];
-            delete El.dataCache[dom.id];
             Ext.removeNode(dom);
+            delete EC[dom.id];
         }
     },
 
@@ -758,8 +758,6 @@ var unitPattern = /\d+(px|em|%|en|ex|pt|in|cm|mm|pc)$/i,
 /**
  * @private
  */
-El.cache = {};
-El.dataCache = {};
 
 /**
  * Retrieves Ext.Element objects.
@@ -783,27 +781,38 @@ El.get = function(el){
         if (!(elm = DOC.getElementById(el))) {
             return null;
         }
-        if (ex = El.cache[el]) {
+        if (EC[el] && EC[el].el) {
+            ex = EC[el].el;
             ex.dom = elm;
         } else {
-            ex = El.cache[el] = new El(elm);
+            EC[el] = {
+                el:  new El(elm),
+                data: {},
+                events: {}
+            }
+            ex = EC[el].el;
         }
         return ex;
     } else if (el.tagName) { // dom element
         if(!(id = el.id)){
             id = Ext.id(el);
         }
-        if(ex = El.cache[id]){
+        if (EC[id] && EC[id].el) {
+            ex = EC[id].el;
             ex.dom = el;
-        }else{
-            ex = El.cache[id] = new El(el);
+        } else {
+            EC[id] = {
+                el:  new El(el),
+                data: {},
+                events: {}
+            }
+            ex = EC[id].el;
         }
         return ex;
     } else if (el instanceof El) {
         if(el != docEl){
             el.dom = DOC.getElementById(el.id) || el.dom; // refresh dom element in case no longer valid,
                                                           // catch case where it hasn't been appended
-            El.cache[el.id] = el; // in case it was created directly with Element(), let's cache it
         }
         return el;
     } else if(el.isComposite) {
@@ -825,10 +834,11 @@ El.get = function(el){
 
 // private method for getting and setting element data
 El.data = function(el, key, value){
-    var c = El.dataCache[el.id];
-    if(!c){
-        c = El.dataCache[el.id] = {};
+    el = El.get(el);
+    if (!el) {
+        return null;
     }
+    var c = EC[el.id].data;
     if(arguments.length == 2){
         return c[key];
     }else{
@@ -847,8 +857,8 @@ function garbageCollect(){
             el,
             d;
 
-        for(eid in El.cache){
-            el = El.cache[eid];
+        for(eid in EC){
+            el = EC[eid].el;
             d = el.dom;
             // -------------------------------------------------------
             // Determining what is garbage:
@@ -867,19 +877,23 @@ function garbageCollect(){
             // directly, but somewhere up the line they have an orphan
             // parent.
             // -------------------------------------------------------
-
+            if (eid == '_DOC' || eid == '_WINDOW') {
+                continue;
+            }
             if(!d || !d.parentNode || (!d.offsetParent && !DOC.getElementById(eid))){
-                delete El.cache[eid];
-                delete El.dataCache[eid];
-                if(d && Ext.enableListenerCollection){
+                if(Ext.enableListenerCollection){
                     Ext.EventManager.removeAll(d);
                 }
+                delete EC[eid];
             }
         }
-        for(eid in El.dataCache){
-            if(!El.cache[eid]){
-                delete El.dataCache[eid];
+        // Cleanup IE Object leaks
+        if (Ext.isIE) {
+            var t = {};
+            for (eid in EC) {
+                t[eid] = EC[eid];
             }
+            EC = Ext.elCache = t;
         }
     }
 }
@@ -963,8 +977,7 @@ if(Ext.isIE || Ext.isGecko){
 
 
 Ext.EventManager.on(window, 'unload', function(){
-    delete El.cache;
-    delete El.dataCache;
+    delete EC;
     delete El._flyweights;
 });
 })();

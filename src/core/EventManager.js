@@ -15,13 +15,24 @@ Ext.EventManager = function(){
         WINDOW = window,
         IEDEFERED = "ie-deferred-loader",
         DOMCONTENTLOADED = "DOMContentLoaded",
-        elHash = {},
         propRe = /^(?:scope|delay|buffer|single|stopEvent|preventDefault|stopPropagation|normalized|args|delegate)$/;
 
     /// There is some jquery work around stuff here that isn't needed in Ext Core.
     function addListener(el, ename, fn, wrap, scope){
-        var id = Ext.id(el),
-            es = elHash[id] = elHash[id] || {},
+        el = Ext.getDom(el);
+        if (!el) {
+            return;
+        }
+        var id;
+        if (el == DOC) {
+            id = '_DOC';
+        } else if (el == WINDOW) {
+            id = '_WINDOW';
+        } else {
+            id = Ext.id(el);
+        }
+        Ext.get(id);
+        var es = Ext.elCache[id].events,
             wfn;
 
         wfn = E.on(el, ename, wrap);
@@ -33,7 +44,7 @@ Ext.EventManager = function(){
         if(ename == "mousewheel" && el.addEventListener){ // workaround for jQuery
             var args = ["DOMMouseScroll", wrap, false];
             el.addEventListener.apply(el, args);
-            Ext.EventManager.addListener(window, 'unload', function(){
+            Ext.EventManager.addListener(WINDOW, 'unload', function(){
                 el.removeEventListener.apply(el, args);
             });
         }
@@ -242,8 +253,19 @@ Ext.EventManager = function(){
          * then this must refer to the same object.
          */
         removeListener : function(element, eventName, fn, scope){
-            var el = Ext.getDom(element),
-                f = el && (elHash[el.id] || {})[eventName] || [],
+            var el = Ext.getDom(element);
+            if (!el) {
+                return;
+            }
+            var id;
+            if (element == DOC) {
+                id = '_DOC';
+            } else if (element == WINDOW) {
+                id = '_WINDOW';
+            } else {
+                id = el.id;
+            }
+            var f = el && (Ext.elCache[id].events)[eventName] || [],
                 wrap, i, l, k, wf;
 
             for (i = 0, len = f.length; i < len; i++) {
@@ -266,12 +288,12 @@ Ext.EventManager = function(){
                     E.un(el, eventName, wf);
                     f.splice(i,1);
                     if (f.length === 0) {
-                        delete elHash[el.id][eventName];
+                        delete Ext.elCache[id].events[eventName];
                     }
-                    for (k in elHash[el.id]) {
+                    for (k in Ext.elCache[id].events) {
                         return false;
                     }
-                    delete elHash[el.id];
+                    Ext.elCache[id].events = {};
                     return false;
                 }
             }
@@ -296,8 +318,16 @@ Ext.EventManager = function(){
             if (!el) {
                 return;
             }
-            var id = el.id,
-                es = elHash[id],
+            var id;
+            if (el == DOC) {
+                id = '_DOC';
+            } else if (el == WINDOW) {
+                id = '_WINDOW';
+            } else {
+                id = el.id;
+            }
+            var es = Ext.elCache[id] || {},
+                es = es.events || {},
                 f, i, len, ename, fn, k;
 
             for(ename in es){
@@ -319,12 +349,26 @@ Ext.EventManager = function(){
                     }
                 }
             }
-            delete elHash[id];
+            if (Ext.elCache[id]) {
+                Ext.elCache[id].events = {};
+            }
         },
 
         getListeners : function(el, eventName) {
-            var id = el.id,
-                es = elHash[id],
+            el = Ext.getDom(el);
+            if (!el) {
+                return;
+            }
+            var id;
+            if (el == DOC) {
+                id = '_DOC';
+            } else if (el == WINDOW) {
+                id = '_WINDOW';
+            } else {
+                id = el.id;
+            }
+            var es = Ext.elCache[id] || {},
+                es = es.events || {},
                 results = [];
             if (es && es[eventName]) {
                 return es[eventName];
@@ -335,11 +379,22 @@ Ext.EventManager = function(){
 
         purgeElement : function(el, recurse, eventName) {
             el = Ext.getDom(el);
-            var id = el.id,
-                es = elHash[id],
+            if (!el) {
+                return;
+            }
+            var id;
+            if (el == DOC) {
+                id = '_DOC';
+            } else if (el == WINDOW) {
+                id = '_WINDOW';
+            } else {
+                id = el.id;
+            }
+            var es = Ext.elCache[id] || {},
+                es = es.events || {},
                 i, f, len;
             if (eventName) {
-                if (es.hasOwnProperty(eventName)) {
+                if (es && es.hasOwnProperty(eventName)) {
                     f = es[eventName];
                     for (i = 0, len = f.length; i < len; i++) {
                         Ext.EventManager.removeListener(el, eventName, f[i][0]);
@@ -357,7 +412,7 @@ Ext.EventManager = function(){
 
         _unload : function() {
             var el;
-            for (el in elHash) {
+            for (el in Ext.elCache) {
                 Ext.EventManager.removeAll(el);
             }
         },
@@ -380,9 +435,7 @@ Ext.EventManager = function(){
                 options.delay = options.delay || 1;
                 docReadyEvent.addListener(fn, scope, options);
             }
-        },
-
-        elHash : elHash
+        }
     };
      /**
      * Appends an event handler to an element.  Shorthand for {@link #addListener}.
@@ -700,3 +753,4 @@ Ext.EventObject = function(){
 
     return new Ext.EventObjectImpl();
 }();
+

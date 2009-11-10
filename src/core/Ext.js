@@ -752,8 +752,20 @@ Company.data.CustomStore = function(config) { ... }
     Ext.ns = Ext.namespace;
 })();
 
-Ext.ns("Ext", "Ext.util", "Ext.lib", "Ext.data");
+Ext.ns("Ext", "Ext.util", "Ext.lib", "Ext.data", "Ext.elCache");
 
+Ext.elCache = {
+    '_WINDOW': {
+        el: '_WINDOW',
+        data: {},
+        events: {}
+    },
+    '_DOC': {
+        el: '_DOC',
+        data: {},
+        events: {}
+    }
+}
 
 /**
  * @class Function
