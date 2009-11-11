@@ -471,15 +471,22 @@ EXTUTIL.Event.prototype = {
     fire : function(){
         var me = this,
             args = TOARRAY(arguments),
+            listeners = me.listeners,
+            len = listeners.length,
+            i = 0,
             l;
-        for (var i=0, len=me.listeners.length; i < len; i++) {
-            l = me.listeners[i];
-            if(l && l.fireFn.apply(l.scope || me.obj || window, args) === FALSE) {
-                return me.firing = false;
+            
+        if(len > 0){
+            me.firing = TRUE;
+            for (; i < len; i++) {
+                l = listeners[i];
+                if(l && l.fireFn.apply(l.scope || me.obj || window, args) === FALSE) {
+                    return (me.firing = FALSE);
+                }
             }
-        };
-        me.firing = false;
-        return true;
+        }
+        me.firing = FALSE;
+        return TRUE;
     }
 };
 })();
