@@ -31,7 +31,7 @@ Ext.EventManager = function(){
         } else {
             id = Ext.id(el);
         }
-        Ext.get(id);
+        Ext.get(el);
         var es = Ext.elCache[id].events,
             wfn;
 
