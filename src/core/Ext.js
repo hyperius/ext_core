@@ -450,10 +450,10 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
          * <li>Arrays : <tt>(Object item, Number index, Array allItems)</tt>
          * <div class="sub-desc">
          * When iterating an array, the supplied function is called with each item.</div></li>
-         * <li>Objects : <tt>(String key, Object value)</tt>
+         * <li>Objects : <tt>(String key, Object value, Object)</tt>
          * <div class="sub-desc">
          * When iterating an object, the supplied function is called with each key-value pair in
-         * the object.</div></li>
+         * the object, and the iterated object</div></li>
          * </ul></div>
          * @param {Object} scope The scope (<code>this</code> reference) in which the specified function is executed. Defaults to
          * the <code>object</code> being iterated.
@@ -468,7 +468,7 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
             }else if(Ext.isObject(obj)){
                 for(var prop in obj){
                     if(obj.hasOwnProperty(prop)){
-                        if(fn.call(scope || obj, prop, obj[prop]) === false){
+                        if(fn.call(scope || obj, prop, obj[prop], obj) === false){
                             return;
                         };
                     }
