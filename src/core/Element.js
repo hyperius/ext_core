@@ -633,20 +633,15 @@ el.un('click', this.handlerFn);
     },
 
     /**
-     * <p>Removes this element from the DOM and deletes it from the cache.</p>
-     * <p>All DOM event listeners are removed from this element. If {@link Ext#enableNestedListenerRemoval} is
-     * <code>true</code>, then DOM event listeners are also removed from all descendant elements.</p>
+     * <p>Removes this element's dom reference.  Note that event and cache removal is handled at {@link Ext#removeNode}</p>
      */
     remove : function(){
         var me = this,
             dom = me.dom;
 
-        (Ext.enableNestedListenerRemoval) ? me.purgeAllListeners() : me.removeAllListeners();
-
         if (dom) {
             delete me.dom;
             Ext.removeNode(dom);
-            delete EC[dom.id];
         }
     },
 
