@@ -247,13 +247,12 @@ if(Ext.DomQuery){
  * to be applied to many related elements in one statement through the returned {@link Ext.CompositeElement CompositeElement} or
  * {@link Ext.CompositeElementLite CompositeElementLite} object.
  * @param {String/Array} selector The CSS selector or an array of elements
- * @param {Boolean} unique (optional) true to create a unique Ext.Element for each element (defaults to a shared flyweight object) <b>Not supported in core</b>
  * @param {HTMLElement/String} root (optional) The root element of the query or id of the root
  * @return {CompositeElementLite/CompositeElement}
  * @member Ext.Element
  * @method select
  */
-Ext.Element.select = function(selector, unique, root){
+Ext.Element.select = function(selector, root){
     var els;
     if(typeof selector == "string"){
         els = Ext.Element.selectorFunction(selector, root);
@@ -269,7 +268,6 @@ Ext.Element.select = function(selector, unique, root){
  * to be applied to many related elements in one statement through the returned {@link Ext.CompositeElement CompositeElement} or
  * {@link Ext.CompositeElementLite CompositeElementLite} object.
  * @param {String/Array} selector The CSS selector or an array of elements
- * @param {Boolean} unique (optional) true to create a unique Ext.Element for each element (defaults to a shared flyweight object)
  * @param {HTMLElement/String} root (optional) The root element of the query or id of the root
  * @return {CompositeElementLite/CompositeElement}
  * @member Ext
