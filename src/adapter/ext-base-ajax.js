@@ -260,7 +260,7 @@ Ext.lib.Ajax = function() {
                     if(!hs || !hs[CONTENTTYPE]){
                         initHeader(CONTENTTYPE, xmlData ? 'text/xml' : 'application/json');
                     }
-                    data = xmlData || (Ext.isObject(jsonData) ? Ext.encode(jsonData) : jsonData);
+                    data = xmlData || (!Ext.isPrimitive(jsonData) ? Ext.encode(jsonData) : jsonData);
                 }
             }                       
             return asyncRequest(method || options.method || "POST", uri, cb, data);
