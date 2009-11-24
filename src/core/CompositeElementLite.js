@@ -50,6 +50,21 @@ Ext.override(Ext.CompositeElementLite, {
 
 Ext.CompositeElementLite.prototype = {
     isComposite: true,    
+    
+    // private
+    getElement : function(el){
+        // Set the shared flyweight dom property to the current element
+        var e = this.el;
+        e.dom = el;
+        e.id = el.id;
+        return e;
+    },
+    
+    // private
+    transformElement : function(el){
+        return Ext.getDom(el);
+    },
+    
     /**
      * Returns the number of elements in this Composite.
      * @return Number
@@ -62,28 +77,39 @@ Ext.CompositeElementLite.prototype = {
      * @param {Mixed} els Either an Array of DOM elements to add, or another Composite object who's elements should be added.
      * @return {CompositeElement} This Composite object.
      */
-    add : function(els){
-        if(els){
-            els = Ext.isArray(els) ? els : (els.elements ? els.elements : [els]);
-            this.elements = this.elements.concat(els);
+    add : function(els, root){
+        var me = this,
+            elements = me.elements;
+        if(!els){
+            return this;
         }
-        return this;
+        if(Ext.isString(els)){
+            els = Ext.Element.selectorFunction(els, root);
+        }else if(els.isComposite){
+            els = els.elements;
+        }else if(!Ext.isIterable(els)){
+            els = [els];
+        }
+        
+        for(var i = 0, len = els.length; i < len; ++i){
+            elements.push(me.transformElement(els[i]));
+        }
+        return me;
     },
     
     invoke : function(fn, args){
-        var els = this.elements,
-            el = this.el,
-            i, len = els.length, e;
+        var me = this,
+            els = me.elements,
+            len = els.length, 
+            e;
             
         for(i = 0; i<len; i++) {
             e = els[i];
-            if(e) {
-                el.dom = e;
-                Ext.Element.prototype[fn].apply(el, args);
+            if(e){
+                Ext.Element.prototype[fn].apply(me.getElement(e), args);
             }
         }
-        
-        return this;
+        return me;
     },
     /**
      * Returns a flyweight Element of the dom element object at the specified index
@@ -91,12 +117,14 @@ Ext.CompositeElementLite.prototype = {
      * @return {Ext.Element}
      */
     item : function(index){
-        var me = this;
-        if(!me.elements[index]){
-            return null;
+        var me = this,
+            el = me.elements[index],
+            out = null;
+
+        if(el){
+            out = me.getElement(el);
         }
-        me.el.dom = me.elements[index];
-        return me.el;
+        return out;
     },
 
     // fixes scope with flyweight
@@ -127,16 +155,17 @@ Ext.CompositeElementLite.prototype = {
      */
     each : function(fn, scope){       
         var me = this,
-            el = me.el,
             els = me.elements,
             len = els.length,
             i, e;
         
         for(i = 0; i<len; i++) {
             e = els[i];
-            if(e) {
-                el.dom = e;
-                if(fn.call(scope || el, el, me, i)) break;
+            if(e){
+                e = this.getElement(e);
+                if(fn.call(scope || e, e, me, i)){
+                    break;
+                }
             }
         }
         return me;
@@ -166,16 +195,19 @@ Ext.CompositeElementLite.prototype = {
     filter : function(selector){
         var els = [],
             me = this,
+            elements = me.elements,
             fn = Ext.isFunction(selector) ? selector
                 : function(el){
                     return el.is(selector);
-                }
+                };
+                
+        
         me.each(function(el, self, i){
             if(fn(el, i) !== false){
-                els[els.length] = el.dom;
+                els[els.length] = me.transformElement(el);
             }
         });
-        me.fill(els);
+        me.elements = els;
         return me;
     },
     
@@ -185,7 +217,7 @@ Ext.CompositeElementLite.prototype = {
      * @return Number The index of the passed Ext.Element in the composite collection, or -1 if not found.
      */
     indexOf : function(el){
-        return this.elements.indexOf(Ext.getDom(el));
+        return this.elements.indexOf(this.transformElement(el));
     },
     
     /**
