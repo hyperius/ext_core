@@ -780,12 +780,7 @@ El.get = function(el){
             ex = EC[el].el;
             ex.dom = elm;
         } else {
-            EC[el] = {
-                el:  new El(elm),
-                data: {},
-                events: {}
-            }
-            ex = EC[el].el;
+            ex = El.addToCache(new El(elm));
         }
         return ex;
     } else if (el.tagName) { // dom element
@@ -796,12 +791,7 @@ El.get = function(el){
             ex = EC[id].el;
             ex.dom = el;
         } else {
-            EC[id] = {
-                el:  new El(el),
-                data: {},
-                events: {}
-            }
-            ex = EC[id].el;
+            ex = El.addToCache(new El(el));
         }
         return ex;
     } else if (el instanceof El) {
@@ -827,6 +817,16 @@ El.get = function(el){
     return null;
 };
 
+El.addToCache = function(el, id){
+    id = id || el.id;    
+    EC[id] = {
+        el:  el,
+        data: {},
+        events: {}
+    };
+    return el;
+};
+
 // private method for getting and setting element data
 El.data = function(el, key, value){
     el = El.get(el);
@@ -850,10 +850,15 @@ function garbageCollect(){
     } else {
         var eid,
             el,
-            d;
+            d,
+            o;
 
         for(eid in EC){
-            el = EC[eid].el;
+            o = EC[eid];
+            if(o.skipGC){
+                continue;
+            }
+            el = o.el;
             d = el.dom;
             // -------------------------------------------------------
             // Determining what is garbage:
@@ -872,9 +877,6 @@ function garbageCollect(){
             // directly, but somewhere up the line they have an orphan
             // parent.
             // -------------------------------------------------------
-            if (eid == '_DOC' || eid == '_WINDOW') {
-                continue;
-            }
             if(!d || !d.parentNode || (!d.offsetParent && !DOC.getElementById(eid))){
                 if(Ext.enableListenerCollection){
                     Ext.EventManager.removeAll(d);

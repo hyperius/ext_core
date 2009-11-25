@@ -15,24 +15,56 @@ Ext.EventManager = function(){
         WINDOW = window,
         IEDEFERED = "ie-deferred-loader",
         DOMCONTENTLOADED = "DOMContentLoaded",
-        propRe = /^(?:scope|delay|buffer|single|stopEvent|preventDefault|stopPropagation|normalized|args|delegate)$/;
+        propRe = /^(?:scope|delay|buffer|single|stopEvent|preventDefault|stopPropagation|normalized|args|delegate)$/,
+        /*
+         * This cache is used to hold special js objects, the document and window, that don't have an id. We need to keep
+         * a reference to them so we can look them up at a later point.
+         */
+        specialElCache = [];
+        
+     function getId(el){
+        var id = false,
+            i = 0,
+            len = specialElCache.length,
+            id = false,
+            skip = false,
+            o;
+        if(el){
+            if(el.getElementById || el.navigator){
+                // look up the id
+                for(; i < len; ++i){
+                    o = specialElCache[i];
+                    if(o.el === el){
+                        id = o.id;
+                        break;
+                    }
+                }
+                if(!id){
+                    id = Ext.id();
+                    specialElCache.push({
+                        id: id,
+                        el: el
+                    });
+                    skip = true;
+                }
+            }else{
+                id = Ext.id(el);
+            }
+            if(!Ext.elCache[id]){
+                Ext.Element.addToCache(el, id);
+                if(skip){
+                    Ext.elCache[id].skipGC = true;
+                }
+            }
+        }
+        return id;
+     };
 
     /// There is some jquery work around stuff here that isn't needed in Ext Core.
     function addListener(el, ename, fn, wrap, scope){
         el = Ext.getDom(el);
-        if (!el) {
-            return;
-        }
-        var id;
-        if (el == DOC) {
-            id = '_DOC';
-        } else if (el == WINDOW) {
-            id = '_WINDOW';
-        } else {
-            id = Ext.id(el);
-        }
-        Ext.get(el);
-        var es = Ext.elCache[id].events,
+        var id = getId(el),
+            es = Ext.elCache[id].events,
             wfn;
 
         wfn = E.on(el, ename, wrap);
@@ -252,20 +284,10 @@ Ext.EventManager = function(){
          * @param {Object} scope If a scope (<b><code>this</code></b> reference) was specified when the listener was added,
          * then this must refer to the same object.
          */
-        removeListener : function(element, eventName, fn, scope){
-            var el = Ext.getDom(element);
-            if (!el) {
-                return;
-            }
-            var id;
-            if (element == DOC) {
-                id = '_DOC';
-            } else if (element == WINDOW) {
-                id = '_WINDOW';
-            } else {
-                id = el.id;
-            }
-            var f = el && (Ext.elCache[id].events)[eventName] || [],
+        removeListener : function(el, eventName, fn, scope){
+            el = Ext.getDom(el);
+            var id = getId(el),
+                f = el && (Ext.elCache[id].events)[eventName] || [],
                 wrap, i, l, k, wf;
 
             for (i = 0, len = f.length; i < len; i++) {
@@ -315,19 +337,9 @@ Ext.EventManager = function(){
          */
         removeAll : function(el){
             el = Ext.getDom(el);
-            if (!el) {
-                return;
-            }
-            var id;
-            if (el == DOC) {
-                id = '_DOC';
-            } else if (el == WINDOW) {
-                id = '_WINDOW';
-            } else {
-                id = el.id;
-            }
-            var es = Ext.elCache[id] || {},
-                es = es.events || {},
+            var id = getId(el),
+                ec = Ext.elCache[id] || {},
+                es = ec.events || {},
                 f, i, len, ename, fn, k;
 
             for(ename in es){
@@ -356,19 +368,9 @@ Ext.EventManager = function(){
 
         getListeners : function(el, eventName) {
             el = Ext.getDom(el);
-            if (!el) {
-                return;
-            }
-            var id;
-            if (el == DOC) {
-                id = '_DOC';
-            } else if (el == WINDOW) {
-                id = '_WINDOW';
-            } else {
-                id = el.id;
-            }
-            var es = Ext.elCache[id] || {},
-                es = es.events || {},
+            var id = getId(el),
+                ec = Ext.elCache[id] || {},
+                es = ec.events || {},
                 results = [];
             if (es && es[eventName]) {
                 return es[eventName];
@@ -379,19 +381,9 @@ Ext.EventManager = function(){
 
         purgeElement : function(el, recurse, eventName) {
             el = Ext.getDom(el);
-            if (!el) {
-                return;
-            }
-            var id;
-            if (el == DOC) {
-                id = '_DOC';
-            } else if (el == WINDOW) {
-                id = '_WINDOW';
-            } else {
-                id = el.id;
-            }
-            var es = Ext.elCache[id] || {},
-                es = es.events || {},
+            var id = getId(el),
+                ec = Ext.elCache[id] || {},
+                es = ec.events || {},
                 i, f, len;
             if (eventName) {
                 if (es && es.hasOwnProperty(eventName)) {
