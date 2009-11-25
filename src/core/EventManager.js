@@ -51,7 +51,7 @@ Ext.EventManager = function(){
                 id = Ext.id(el);
             }
             if(!Ext.elCache[id]){
-                Ext.Element.addToCache(el, id);
+                Ext.Element.addToCache(new Ext.Element(el), id);
                 if(skip){
                     Ext.elCache[id].skipGC = true;
                 }
