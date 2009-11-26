@@ -40,7 +40,8 @@ Ext.EventManager = function(){
                     }
                 }
                 if(!id){
-                    id = Ext.id();
+                    // for browsers that support it, ensure that give the el the same id
+                    id = Ext.id(el);
                     specialElCache.push({
                         id: id,
                         el: el
