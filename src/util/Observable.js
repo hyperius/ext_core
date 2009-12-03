@@ -365,10 +365,10 @@ function createTargeted(h, o, scope){
     };
 };
 
-function createBuffered(h, o, scope){
-    var task = new EXTUTIL.DelayedTask();
+function createBuffered(h, o, fn, scope){
+    fn.task = new EXTUTIL.DelayedTask();
     return function(){
-        task.delay(o.buffer, h, scope, TOARRAY(arguments));
+        fn.task.delay(o.buffer, h, scope, TOARRAY(arguments));
     };
 }
 
@@ -379,12 +379,14 @@ function createSingle(h, e, fn, scope){
     };
 }
 
-function createDelayed(h, o, scope){
+function createDelayed(h, o, fn, scope){
     return function(){
-        var args = TOARRAY(arguments);
-        (function(){
-            h.apply(scope, args);
-        }).defer(o.delay || 10);
+        var task = new EXTUTIL.DelayedTask();
+        if(!fn.tasks) {
+            fn.tasks = [];
+        }
+        fn.tasks.push(task);
+        task.delay(o.delay || 10, h, scope, TOARRAY(arguments));
     };
 };
 
@@ -419,13 +421,13 @@ EXTUTIL.Event.prototype = {
             h = createTargeted(h, o, scope);
         }
         if(o.delay){
-            h = createDelayed(h, o, scope);
+            h = createDelayed(h, o, fn, scope);
         }
         if(o.single){
             h = createSingle(h, this, fn, scope);
         }
         if(o.buffer){
-            h = createBuffered(h, o, scope);
+            h = createBuffered(h, o, fn, scope);
         }
         l.fireFn = h;
         return l;
@@ -433,14 +435,14 @@ EXTUTIL.Event.prototype = {
 
     findListener : function(fn, scope){
         var list = this.listeners,
-            i = list.length, l;        
+            i = list.length, l;
         while(i--) {
             l = list[i];
             if(l) {
                 s = l.scope;
                 if(l.fn == fn && (s == scope || s == this.obj)){
                     return i;
-                }                
+                }
             }
         }
         return -1;
@@ -452,11 +454,27 @@ EXTUTIL.Event.prototype = {
 
     removeListener : function(fn, scope){
         var index,
+            l,
+            k,
             me = this,
             ret = FALSE;
         if((index = me.findListener(fn, scope)) != -1){
             if (me.firing) {
                 me.listeners = me.listeners.slice(0);
+            }
+            l = me.listeners[index].fn;
+            // Cancel buffered tasks
+            if(l.task) {
+                l.task.cancel();
+                delete l.task;
+            }
+            // Cancel delayed tasks
+            k = l.tasks && l.tasks.length;
+            if(k) {
+                while(k--) {
+                    l.tasks[k].cancel();
+                }
+                delete l.tasks;
             }
             me.listeners.splice(index, 1);
             ret = TRUE;
@@ -464,8 +482,14 @@ EXTUTIL.Event.prototype = {
         return ret;
     },
 
+    // Iterate to stop any buffered/delayed events
     clearListeners : function(){
-        this.listeners = [];
+        var me = this,
+            l = me.listeners,
+            i = l.length;
+        while(i--) {
+            me.removeListener(l[i].fn, l[i].scope);
+        }
     },
 
     fire : function(){
@@ -475,7 +499,7 @@ EXTUTIL.Event.prototype = {
             len = listeners.length,
             i = 0,
             l;
-            
+
         if(len > 0){
             me.firing = TRUE;
             for (; i < len; i++) {

@@ -5,12 +5,15 @@
     pkgs: [{
         name: 'Ext Core',
         file: 'ext-core.js',
-        isDebug: true,        
+        isDebug: true,
         fileIncludes: [{
             text: 'Ext.js',
             path: 'src/core/'
         },{
             text: 'TaskMgr.js',
+            path: 'src/util/'
+        },{
+            text: 'DelayedTask.js',
             path: 'src/util/'
         },{
             text: 'ext-base-begin.js',
@@ -78,9 +81,6 @@
         },{
             text: 'Connection.js',
             path: 'src/data/'
-        },{
-            text: 'DelayedTask.js',
-            path: 'src/util/'
         },{
             text: 'JSON.js',
             path: 'src/util/'

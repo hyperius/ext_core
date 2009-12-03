@@ -21,7 +21,7 @@ Ext.EventManager = function(){
          * a reference to them so we can look them up at a later point.
          */
         specialElCache = [];
-        
+
      function getId(el){
         var id = false,
             i = 0,
@@ -104,7 +104,7 @@ Ext.EventManager = function(){
             }
             if(docReadyEvent){
                 docReadyEvent.fire();
-                docReadyEvent.clearListeners();
+                docReadyEvent.listeners = []; // clearListeners no longer compatible.  Force single: true?
             }
         }
     };
@@ -421,7 +421,7 @@ Ext.EventManager = function(){
             if(docReadyState){ // if it already fired
                 docReadyEvent.addListener(fn, scope, options);
                 docReadyEvent.fire();
-                docReadyEvent.clearListeners();
+                docReadyEvent.listeners = []; // clearListeners no longer compatible.  Force single: true?
             } else {
                 if(!docReadyEvent) initDocReady();
                 options = options || {};

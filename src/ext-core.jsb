@@ -11,6 +11,7 @@
     <include name="adapter\ext-base-anim.js" />
     <include name="adapter\ext-base-anim-extra.js" />
     <include name="adapter\ext-base-end.js" />
+    <include name="util\DelayedTask.js" />
     <include name="util\Observable.js" />
     <include name="core\DomHelper.js" />
     <include name="core\Template.js" />
@@ -26,7 +27,6 @@
     <include name="core\Fx.js" />
     <include name="core\CompositeElementLite.js" />
     <include name="data\Connection.js" />
-    <include name="util\DelayedTask.js" />
     <include name="util\JSON.js" />
   </target>
   <file name="ext-core.jsb" path="" />
