@@ -435,7 +435,9 @@ EXTUTIL.Event.prototype = {
 
     findListener : function(fn, scope){
         var list = this.listeners,
-            i = list.length, l;
+            i = list.length,
+            l,
+            s;
         while(i--) {
             l = list[i];
             if(l) {
