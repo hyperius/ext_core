@@ -162,21 +162,29 @@ Ext.Element.addMethods(function(){
                     var el = this.dom,
                         v,
                         cs,
-                        out;
-                    if(el == document) return null;
+                        out,
+                        display,
+                        wk = Ext.isWebKit,
+                        display;
+                        
+                    if(el == document){
+                        return null;
+                    }
                     prop = chkCache(prop);
+                    // Fix bug caused by this: https://bugs.webkit.org/show_bug.cgi?id=13343
+                    if(wk && /marginRight/.test(prop)){
+                        display = this.getStyle('display');
+                        el.style.display = 'inline-block';
+                    }
                     out = (v = el.style[prop]) ? v :
                            (cs = view.getComputedStyle(el, "")) ? cs[prop] : null;
 
                     // Webkit returns rgb values for transparent.
-                    if(Ext.isWebKit) {
-                        if (out == 'rgba(0, 0, 0, 0)'){
+                    if(wk){
+                        if(out == 'rgba(0, 0, 0, 0)'){
                             out = 'transparent';
-                        } else if (prop == "marginRight" && cs.display != 'inline-block') {
-                            v = cs.display;
-                            el.style.display = 'inline-block';
-                            out =  (cs = view.getComputedStyle(el, "")) ? cs[prop] : null;
-                            el.style.display = v;
+                        }else if(display){
+                            el.style.display = display;
                         }
                     }
                     return out;
