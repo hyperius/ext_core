@@ -246,23 +246,29 @@ Ext.DomQuery = function(){
 
     function byAttribute(cs, attr, value, op, custom){
         var r = [], 
-        	ri = -1, 
-        	st = custom=="{",
-        	f = Ext.DomQuery.operators[op];
+            ri = -1, 
+            st = custom=="{",
+            f = Ext.DomQuery.operators[op],
+            a,
+            ih;
         for(var i = 0, ci; ci = cs[i]; i++){
             if(ci.nodeType != 1){
                 continue;
             }
-            var a;
-            if(st){
-                a = Ext.DomQuery.getStyle(ci, attr);
-            }
-            else if(attr == "class" || attr == "className"){
-                a = ci.className;
-            }else if(attr == "for"){
-                a = ci.htmlFor;
-            }else if(attr == "href"){
-                a = ci.getAttribute("href", 2);
+            ih = ci.innerHTML;
+            // we only need to change the property names if we're dealing with html nodes, not XML
+            if(ih !== null && ih !== undefined){
+                if(st){
+                    a = Ext.DomQuery.getStyle(ci, attr);
+                }else if(attr == "class" || attr == "className"){
+                    a = ci.className;
+                }else if(attr == "for"){
+                    a = ci.htmlFor;
+                }else if(attr == "href"){
+                    a = ci.getAttribute("href", 2);
+                }else{
+                    a = ci.getAttribute(attr);
+                }
             }else{
                 a = ci.getAttribute(attr);
             }
