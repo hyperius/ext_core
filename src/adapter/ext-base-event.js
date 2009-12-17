@@ -197,13 +197,12 @@ Ext.lib.Event = function() {
         // This function should ALWAYS be called from Ext.EventManager
         removeListener: function(el, eventName, fn) {
             el = Ext.getDom(el);
-            var i, len, li;
+            var i, len, li, lis;
             if (el && fn) {
-                if (eventName == UNLOAD) {
-                    if (unloadListeners[id] !== undefined) {
-                        for (i = 0, len = unloadListeners[id].length; i < len; i++) {
-                            li = unloadListeners[id][i];
-                            if (li && li[TYPE] == eventName && li[FN] == fn) {
+                if(eventName == UNLOAD){
+                    if((lis = unloadListeners[el.id]) !== undefined){
+                        for(i = 0, len = lis.length; i < len; i++){
+                            if((li = lis[i]) && li[TYPE] == eventName && li[FN] == fn){
                                 unloadListeners[id].splice(i, 1);
                             }
                         }
