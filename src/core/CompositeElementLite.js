@@ -101,9 +101,10 @@ Ext.CompositeElementLite.prototype = {
         var me = this,
             els = me.elements,
             len = els.length, 
-            e;
+            e, 
+            i;
             
-        for(i = 0; i<len; i++) {
+        for(i = 0; i < len; i++) {
             e = els[i];
             if(e){
                 Ext.Element.prototype[fn].apply(me.getElement(e), args);

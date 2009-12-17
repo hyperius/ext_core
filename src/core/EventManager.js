@@ -289,7 +289,7 @@ Ext.EventManager = function(){
             el = Ext.getDom(el);
             var id = getId(el),
                 f = el && (Ext.elCache[id].events)[eventName] || [],
-                wrap, i, l, k, wf;
+                wrap, i, l, k, wf, len;
 
             for (i = 0, len = f.length; i < len; i++) {
                 if (Ext.isArray(f[i]) && f[i][0] == fn && (!scope || f[i][2] == scope)) {
