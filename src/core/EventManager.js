@@ -62,7 +62,7 @@ Ext.EventManager = function(){
      };
 
     /// There is some jquery work around stuff here that isn't needed in Ext Core.
-    function addListener(el, ename, fn, wrap, scope){
+    function addListener(el, ename, fn, task, wrap, scope){
         el = Ext.getDom(el);
         var id = getId(el),
             es = Ext.elCache[id].events,
@@ -70,7 +70,15 @@ Ext.EventManager = function(){
 
         wfn = E.on(el, ename, wrap);
         es[ename] = es[ename] || [];
-        es[ename].push([fn, wrap, scope, wfn]);
+
+        /* 0 = Original Function,
+           1 = Event Manager Wrapped Function,
+           2 = Scope,
+           3 = Adapter Wrapped Function,
+           4 = Buffered Task
+        */
+        es[ename].push([fn, wrap, scope, wfn, task]);
+
 
         // this is a workaround for jQuery and should somehow be removed from Ext Core in the future
         // without breaking ExtJS.
@@ -142,13 +150,11 @@ Ext.EventManager = function(){
         };
     };
 
-    function createBuffered(h, o, fn){
-        fn.task = new Ext.util.DelayedTask(h);
-        var w = function(e){
+    function createBuffered(h, o, task){
+        return function(e){
             // create new event object impl so new events don't wipe out properties
-            fn.task.delay(o.buffer, h, null, [new Ext.EventObjectImpl(e)]);
+            task.delay(o.buffer, h, null, [new Ext.EventObjectImpl(e)]);
         };
-        return w;
     };
 
     function createSingle(h, el, ename, fn, scope){
@@ -171,7 +177,7 @@ Ext.EventManager = function(){
 
     function listen(element, ename, opt, fn, scope){
         var o = !Ext.isObject(opt) ? {} : opt,
-            el = Ext.getDom(element);
+            el = Ext.getDom(element), task;
 
         fn = fn || o.fn;
         scope = scope || o.scope;
@@ -218,10 +224,11 @@ Ext.EventManager = function(){
             h = createSingle(h, el, ename, fn, scope);
         }
         if(o.buffer){
-            h = createBuffered(h, o, fn);
+            task = new Ext.util.DelayedTask(h);
+            h = createBuffered(h, o, task);
         }
 
-        addListener(el, ename, fn, h, scope);
+        addListener(el, ename, fn, task, h, scope);
         return h;
     };
 
@@ -289,13 +296,19 @@ Ext.EventManager = function(){
             el = Ext.getDom(el);
             var id = getId(el),
                 f = el && (Ext.elCache[id].events)[eventName] || [],
-                wrap, i, l, k, wf, len;
+                wrap, i, l, k, wf, len, fnc;
 
             for (i = 0, len = f.length; i < len; i++) {
-                if (Ext.isArray(f[i]) && f[i][0] == fn && (!scope || f[i][2] == scope)) {
-                    if(fn.task) {
-                        fn.task.cancel();
-                        delete fn.task;
+
+                /* 0 = Original Function,
+                   1 = Event Manager Wrapped Function,
+                   2 = Scope,
+                   3 = Adapter Wrapped Function,
+                   4 = Buffered Task
+                */
+                if (Ext.isArray(fnc = f[i]) && fnc[0] == fn && (!scope || fnc[2] == scope)) {
+                    if(fnc[4]) {
+                        fnc[4].cancel();
                     }
                     k = fn.tasks && fn.tasks.length;
                     if(k) {
@@ -304,9 +317,9 @@ Ext.EventManager = function(){
                         }
                         delete fn.tasks;
                     }
-                    wf = wrap = f[i][1];
+                    wf = wrap = fnc[1];
                     if (E.extAdapter) {
-                        wf = f[i][3];
+                        wf = fnc[3];
                     }
                     E.un(el, eventName, wf);
                     f.splice(i,1);
@@ -346,19 +359,24 @@ Ext.EventManager = function(){
             for(ename in es){
                 if(es.hasOwnProperty(ename)){
                     f = es[ename];
+                    /* 0 = Original Function,
+                       1 = Event Manager Wrapped Function,
+                       2 = Scope,
+                       3 = Adapter Wrapped Function,
+                       4 = Buffered Task
+                    */
                     for (i = 0, len = f.length; i < len; i++) {
-                        fn = f[i][0];
-                        if(fn.task) {
-                            fn.task.cancel();
-                            delete fn.task;
+                        fn = f[i];
+                        if(fn[4]) {
+                            fn[4].cancel();
                         }
-                        if(fn.tasks && (k = fn.tasks.length)) {
+                        if(fn[0].tasks && (k = fn[0].tasks.length)) {
                             while(k--) {
-                                fn.tasks[k].cancel();
+                                fn[0].tasks[k].cancel();
                             }
                             delete fn.tasks;
                         }
-                        E.un(el, ename, E.extAdapter ? f[i][3] : f[i][1]);
+                        E.un(el, ename, E.extAdapter ? fn[3] : fn[1]);
                     }
                 }
             }
@@ -746,4 +764,3 @@ Ext.EventObject = function(){
 
     return new Ext.EventObjectImpl();
 }();
-
