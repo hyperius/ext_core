@@ -105,7 +105,7 @@ Ext.lib.Event = function() {
                     if(!v.checkReady || loadComplete || element.nextSibling || (doc && doc.body)) {
                         element = v.override ? (v.override === true ? v.obj : v.override) : element;
                         v.fn.call(element, v.obj);
-                        v = null;
+                        onAvailStack.remove(v);
                     } else {
                         notAvail.push(v);
                     }
