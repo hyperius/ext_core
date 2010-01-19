@@ -426,6 +426,8 @@ Ext.EventManager = function(){
             for (el in Ext.elCache) {
                 Ext.EventManager.removeAll(el);
             }
+            delete Ext.elCache;
+            delete Ext.Element._flyweights;
         },
         /**
          * Adds a listener to be notified when the document is ready (before onload and before images are loaded). Can be

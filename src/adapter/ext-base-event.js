@@ -203,7 +203,7 @@ Ext.lib.Event = function() {
                     if((lis = unloadListeners[el.id]) !== undefined){
                         for(i = 0, len = lis.length; i < len; i++){
                             if((li = lis[i]) && li[TYPE] == eventName && li[FN] == fn){
-                                unloadListeners[id].splice(i, 1);
+                                unloadListeners[el.id].splice(i, 1);
                             }
                         }
                     }
