@@ -79,17 +79,20 @@ Ext.EventManager = function(){
         */
         es[ename].push([fn, wrap, scope, wfn, task]);
 
-
         // this is a workaround for jQuery and should somehow be removed from Ext Core in the future
         // without breaking ExtJS.
-        if(ename == "mousewheel" && el.addEventListener){ // workaround for jQuery
+
+        // workaround for jQuery
+        if(el.addEventListener && ename == "mousewheel"){
             var args = ["DOMMouseScroll", wrap, false];
             el.addEventListener.apply(el, args);
             Ext.EventManager.addListener(WINDOW, 'unload', function(){
                 el.removeEventListener.apply(el, args);
             });
         }
-        if(ename == "mousedown" && el == document){ // fix stopped mousedowns on the document
+
+        // fix stopped mousedowns on the document
+        if(el == DOC && ename == "mousedown"){
             Ext.EventManager.stoppedMouseDownEvent.addListener(wrap);
         }
     };
@@ -296,7 +299,7 @@ Ext.EventManager = function(){
             el = Ext.getDom(el);
             var id = getId(el),
                 f = el && (Ext.elCache[id].events)[eventName] || [],
-                wrap, i, l, k, wf, len, fnc;
+                wrap, i, l, k, len, fnc;
 
             for (i = 0, len = f.length; i < len; i++) {
 
@@ -317,12 +320,20 @@ Ext.EventManager = function(){
                         }
                         delete fn.tasks;
                     }
-                    wf = wrap = fnc[1];
-                    if (E.extAdapter) {
-                        wf = fnc[3];
+                    wrap = fnc[1];
+                    E.un(el, eventName, E.extAdapter ? fnc[3] : wrap);
+
+                    // jQuery workaround that should be removed from Ext Core
+                    if(wrap && el.addEventListener && eventName == "mousewheel"){
+                        el.removeEventListener("DOMMouseScroll", wrap, false);
                     }
-                    E.un(el, eventName, wf);
-                    f.splice(i,1);
+
+                    // fix stopped mousedowns on the document
+                    if(wrap && el == DOC && eventName == "mousedown"){
+                        Ext.EventManager.stoppedMouseDownEvent.removeListener(wrap);
+                    }
+
+                    f.splice(i, 1);
                     if (f.length === 0) {
                         delete Ext.elCache[id].events[eventName];
                     }
@@ -332,15 +343,6 @@ Ext.EventManager = function(){
                     Ext.elCache[id].events = {};
                     return false;
                 }
-            }
-
-            // jQuery workaround that should be removed from Ext Core
-            if(eventName == "mousewheel" && el.addEventListener && wrap){
-                el.removeEventListener("DOMMouseScroll", wrap, false);
-            }
-
-            if(eventName == "mousedown" && el == DOC && wrap){ // fix stopped mousedowns on the document
-                Ext.EventManager.stoppedMouseDownEvent.removeListener(wrap);
             }
         },
 
@@ -354,7 +356,7 @@ Ext.EventManager = function(){
             var id = getId(el),
                 ec = Ext.elCache[id] || {},
                 es = ec.events || {},
-                f, i, len, ename, fn, k;
+                f, i, len, ename, fn, k, wrap;
 
             for(ename in es){
                 if(es.hasOwnProperty(ename)){
@@ -376,7 +378,18 @@ Ext.EventManager = function(){
                             }
                             delete fn.tasks;
                         }
-                        E.un(el, ename, E.extAdapter ? fn[3] : fn[1]);
+                        wrap =  fn[1];
+                        E.un(el, ename, E.extAdapter ? fn[3] : wrap);
+
+                        // jQuery workaround that should be removed from Ext Core
+                        if(el.addEventListener && wrap && ename == "mousewheel"){
+                            el.removeEventListener("DOMMouseScroll", wrap, false);
+                        }
+
+                        // fix stopped mousedowns on the document
+                        if(wrap && el == DOC &&  ename == "mousedown"){
+                            Ext.EventManager.stoppedMouseDownEvent.removeListener(wrap);
+                        }
                     }
                 }
             }
