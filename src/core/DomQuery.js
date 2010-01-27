@@ -51,6 +51,7 @@ All selectors, attribute filters and pseudos below can be combined infinitely in
     <li> <b>E:has(S)</b> an E element that has a descendent that matches simple selector S</li>
     <li> <b>E:next(S)</b> an E element whose next sibling matches simple selector S</li>
     <li> <b>E:prev(S)</b> an E element whose previous sibling matches simple selector S</li>
+    <li> <b>E:any(S1|S2|S2)</b> an E element which matches any of the simple selectors S1, S2 or S3//\\</li>
 </ul>
 <h4>CSS Value Selectors:</h4>
 <ul class="list">
