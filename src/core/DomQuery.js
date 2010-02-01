@@ -80,7 +80,7 @@ Ext.DomQuery = function(){
 	// and Safari completely fails so they need to continue to use expandos.
 	isIE = window.ActiveXObject ? true : false,
 	key = 30803;
-	    
+    
     // this eval is stop the compressor from
     // renaming the variable to something shorter
     eval("var batch = 30803;");    	
@@ -102,7 +102,7 @@ Ext.DomQuery = function(){
     }
 
     // retrieve the next element node
-    function next(n){
+    function next(n){	
         while((n = n.nextSibling) && n.nodeType != 1);
         return n;
     }
@@ -515,7 +515,7 @@ Ext.DomQuery = function(){
          * @return {Array} An Array of DOM elements which match the selector. If there are
          * no matches, and empty Array is returned.
          */
-        select : function(path, root, type){
+	jsSelect: function(path, root, type){
 	    // set root to doc if not specified.
 	    root = root || document;
 	    
@@ -548,6 +548,23 @@ Ext.DomQuery = function(){
             }
             return results;
         },
+	isXml: function(el) {
+	    var docEl = (el ? el.ownerDocument || el : 0).documentElement;
+	    return docEl ? docEl.nodeName !== "HTML" : false;
+	},
+        select : document.querySelectorAll ? function(path, root, type) {
+	    root = root || document;
+	    if (!Ext.DomQuery.isXml(root)) {
+		try {
+		    var cs = root.querySelectorAll(path);
+		    return Ext.toArray(cs);
+		}
+		catch (ex) {}		
+	    }	    
+	    return Ext.DomQuery.jsSelect.call(this, path, root, type);
+	} : function(path, root, type) {
+	    return Ext.DomQuery.jsSelect.call(this, path, root, type);
+	},
 
         /**
          * Selects a single element.
