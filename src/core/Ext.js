@@ -13,7 +13,7 @@ Ext = {
      * The version of the framework
      * @type String
      */
-    version : '3.1.0'
+    version : '3.1.1'
 };
 
 /**
@@ -155,7 +155,11 @@ Ext.apply = function(o, c, defaults){
          * @return {String} The generated Id.
          */
         id : function(el, prefix){
-            return (el = Ext.getDom(el) || {}).id = el.id || (prefix || "ext-gen") + (++idSeed);
+            el = Ext.getDom(el, true) || {};
+            if (!el.id) {
+                el.id = (prefix || "ext-gen") + (++idSeed);
+            }
+            return el.id;
         },
 
         /**
@@ -478,6 +482,8 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
 
         /**
          * Return the dom node for the passed String (id), dom node, or Ext.Element.
+         * Optional 'strict' flag is needed for IE since it can return 'name' and
+         * 'id' elements by using getElementById.
          * Here are some examples:
          * <pre><code>
 // gets dom node based on id
@@ -497,11 +503,29 @@ function(el){
          * @param {Mixed} el
          * @return HTMLElement
          */
-        getDom : function(el){
+        getDom : function(el, strict){
             if(!el || !DOC){
                 return null;
             }
-            return el.dom ? el.dom : (Ext.isString(el) ? DOC.getElementById(el) : el);
+            if (el.dom){
+                return el.dom;
+            } else {
+                if (Ext.isString(el)) {
+                    var e = DOC.getElementById(el);
+                    // IE returns elements with the 'name' and 'id' attribute.
+                    // we do a strict check to return the element with only the id attribute
+                    if (e && isIE && strict) {
+                        if (el == e.getAttribute('id')) {
+                            return e;
+                        } else {
+                            return null;
+                        }
+                    }
+                    return e;
+                } else {
+                    return el;
+                }
+            }
         },
 
         /**
