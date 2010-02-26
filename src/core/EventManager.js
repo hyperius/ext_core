@@ -441,6 +441,19 @@ Ext.EventManager = function(){
             }
             delete Ext.elCache;
             delete Ext.Element._flyweights;
+
+            // Abort any outstanding Ajax requests
+            var t,
+                tid,
+                ajax = Ext.lib.Ajax;
+
+            (Ext.isObject(ajax.timeout)) ? to = ajax.timeout : to = {};
+            for (tid in to) {
+                t = to[tid];
+                if (Ext.isNumber(t)) {
+                    ajax.abort(tid);
+                }
+            }
         },
         /**
          * Adds a listener to be notified when the document is ready (before onload and before images are loaded). Can be
