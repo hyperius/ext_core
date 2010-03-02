@@ -200,6 +200,7 @@
 
             if(colorRE.test(attr)){
                 val = [];
+                end = end || [];
 
                 for(i = 0, len = start.length; i < len; i++) {
                     v = start[i];
