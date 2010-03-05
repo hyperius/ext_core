@@ -104,8 +104,8 @@ Ext.EventManager = function(){
              'doScroll' will NOT work in a IFRAME/FRAMESET.
              The method succeeds but, a DOM query done immediately after -- FAILS.
           */
-        if(window != top){ 
-            return false; 
+        if(window != top){
+            return false;
         }
 
         try{
@@ -504,17 +504,17 @@ Ext.EventManager = function(){
             }
             delete Ext.elCache;
             delete Ext.Element._flyweights;
-            
+
             // Abort any outstanding Ajax requests
-            var t,
+            var c,
+                conn,
                 tid,
                 ajax = Ext.lib.Ajax;
-
-            (Ext.isObject(ajax.timeout)) ? to = ajax.timeout : to = {};
-            for (tid in to) {
-                t = to[tid];
-                if (Ext.isNumber(t)) {
-                    ajax.abort(tid);
+            (Ext.isObject(ajax.conn)) ? conn = ajax.conn : conn = {};
+            for (tid in conn) {
+                c = conn[tid];
+                if (c) {
+                    ajax.abort({conn: c, tId: tid});
                 }
             }
         },
@@ -541,7 +541,7 @@ Ext.EventManager = function(){
                 docReadyEvent.addListener(fn, scope, options);
             }
         },
-        
+
         /**
          * Forces a document ready state transition for the framework.  Used when Ext is loaded
          * into a DOM structure AFTER initial page load (Google API or other dynamic load scenario.
