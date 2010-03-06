@@ -796,8 +796,15 @@ El.get = function(el){
         return ex;
     } else if (el instanceof El) {
         if(el != docEl){
-            el.dom = DOC.getElementById(el.id) || el.dom; // refresh dom element in case no longer valid,
-                                                          // catch case where it hasn't been appended
+            // refresh dom element in case no longer valid,
+            // catch case where it hasn't been appended
+
+            // If an el instance is passed, don't pass to getElementById without some kind of id
+            if (Ext.isIE && (el.id == undefined || el.id == '')) {
+                el.dom = el.dom;
+            } else {
+                el.dom = DOC.getElementById(el.id) || el.dom;
+            }
         }
         return el;
     } else if(el.isComposite) {
