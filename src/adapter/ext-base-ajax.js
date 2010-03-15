@@ -56,7 +56,9 @@ Ext.lib.Ajax = function() {
             headerStr,
             conn = o.conn,
             t,
-            s;
+            s,
+            // see: https://prototype.lighthouseapp.com/projects/8886/tickets/129-ie-mangles-http-response-status-code-204-to-1223
+            isBrokenStatus = conn.status == 1223;
 
         try {
             headerStr = o.conn.getAllResponseHeaders();
@@ -74,8 +76,9 @@ Ext.lib.Ajax = function() {
 
         return {
             tId : o.tId,
-            status : conn.status,
-            statusText : conn.statusText,
+            // Normalize the status and statusText when IE returns 1223, see the above link.
+            status : isBrokenStatus ? 204 : conn.status,
+            statusText : isBrokenStatus ? 'No Content' : conn.statusText,
             getResponseHeader : function(header){return headerObj[header.toLowerCase()];},
             getAllResponseHeaders : function(){return headerStr},
             responseText : conn.responseText,
