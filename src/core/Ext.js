@@ -13,7 +13,7 @@ Ext = {
      * The version of the framework
      * @type String
      */
-    version : '3.1.1'
+    version : '3.2.0'
 };
 
 /**
@@ -659,7 +659,7 @@ function(el){
          * @return {Boolean}
          */
         isElement : function(v) {
-            return !!v && v.tagName;
+            return v ? !!v.tagName : false;
         },
 
         /**
