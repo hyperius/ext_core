@@ -334,7 +334,6 @@ Ext.lib.Event = function() {
                 }
             };
 
-            unloadListeners = null;
             Ext.EventManager._unload();
 
             doRemove(win, UNLOAD, EU._unload);
