@@ -109,7 +109,7 @@ Ext.apply = function(o, c, defaults){
          * runtime configuration and must be set before onReady.
          * @type Boolean
          */
-        enableForcedBoxModel : true,
+        enableForcedBoxModel : false,
 
         /**
          * True to automatically uncache orphaned Ext.Elements periodically (defaults to true)
