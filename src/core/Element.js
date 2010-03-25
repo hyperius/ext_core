@@ -629,7 +629,7 @@ el.un('click', this.handlerFn);
      * @return {Boolean}
      */
     isBorderBox : function(){
-        return noBoxAdjust[(this.dom.tagName || "").toLowerCase()] || Ext.isBorderBox;
+        return Ext.isBorderBox || Ext.isForcedBorderBox || noBoxAdjust[(this.dom.tagName || "").toLowerCase()];
     },
 
     /**

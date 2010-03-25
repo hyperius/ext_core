@@ -13,7 +13,7 @@ Ext = {
      * The version of the framework
      * @type String
      */
-    version : '3.2.0'
+    version : '3.3.0'
 };
 
 /**
@@ -102,6 +102,14 @@ Ext.apply = function(o, c, defaults){
          * @type Boolean
          * @property enableFx
          */
+
+        /**
+         * HIGHLY EXPERIMENTAL
+         * True to force css based border-box model override and turning off javascript based adjustments. This is a
+         * runtime configuration and must be set before onReady.
+         * @type Boolean
+         */
+        enableForcedBoxModel : true,
 
         /**
          * True to automatically uncache orphaned Ext.Elements periodically (defaults to true)

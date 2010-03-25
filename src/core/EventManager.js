@@ -619,6 +619,12 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
                 p.className += Ext.isStrict ? ' ext-strict' : ' ext-border-box';
             }
         }
+        // Forced border box model class applied to all elements. Bypassing javascript based box model adjustments
+        // in favor of css.
+        if (Ext.enableForcedBoxModel && !Ext.isBorderBox && !Ext.isIE6 && !Ext.isIE7) {
+            Ext.isForcedBorderBox = true;
+            cls.push("ext-forced-border-box");
+        }
         bd.className += cls.join(' ');
         return true;
     }
