@@ -10,6 +10,7 @@ Ext.Element.addMethods(function(){
         propFloat = Ext.isIE ? 'styleFloat' : 'cssFloat',
         opacityRe = /alpha\(opacity=(.*)\)/i,
         trimRe = /^\s+|\s+$/g,
+        marginRightRe = /marginRight/,
         EL = Ext.Element,
         PADDING = "padding",
         MARGIN = "margin",
@@ -166,26 +167,23 @@ Ext.Element.addMethods(function(){
                         display,
                         wk = Ext.isWebKit,
                         display;
-                        
+
                     if(el == document){
                         return null;
                     }
                     prop = chkCache(prop);
-                    // Fix bug caused by this: https://bugs.webkit.org/show_bug.cgi?id=13343
-                    if(wk && /marginRight/.test(prop)){
-                        display = this.getStyle('display');
-                        el.style.display = 'inline-block';
-                    }
                     out = (v = el.style[prop]) ? v :
                            (cs = view.getComputedStyle(el, "")) ? cs[prop] : null;
-
+                    // Fix bug caused by this: https://bugs.webkit.org/show_bug.cgi?id=13343
+                    if(wk && marginRightRe.test(prop) && out != '0px'){
+                        display = this.getStyle('display');
+                        el.style.display = 'inline-block';
+                        out = view.getComputedStyle(el, '');
+                        el.style.display = display;
+                    }
                     // Webkit returns rgb values for transparent.
-                    if(wk){
-                        if(out == 'rgba(0, 0, 0, 0)'){
-                            out = 'transparent';
-                        }else if(display){
-                            el.style.display = display;
-                        }
+                    if(wk && out == 'rgba(0, 0, 0, 0)'){
+                        out = 'transparent';
                     }
                     return out;
                 } :
