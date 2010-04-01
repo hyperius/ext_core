@@ -209,7 +209,7 @@ el.animate(
 
         // private legacy anim prep
         preanim : function(a, i){
-            return !a[i] ? false : (Ext.isObject(a[i]) ? a[i]: {duration: a[i+1], callback: a[i+2], easing: a[i+3]});
+            return !a[i] ? false : (typeof a[i] == 'object' ? a[i]: {duration: a[i+1], callback: a[i+2], easing: a[i+3]});
         },
 
         /**
@@ -232,7 +232,7 @@ el.animate(
                 dom = me.dom;
 
             // hideMode string override
-            if (Ext.isString(animate)){
+            if (typeof animate == 'string'){
                 isDisplay = animate == DISPLAY;
                 isVisible = animate == VISIBILITY;
                 isOffsets = animate == OFFSETS;
@@ -325,7 +325,7 @@ el.animate(
          */
         hide : function(animate){
             // hideMode override
-            if (Ext.isString(animate)){
+            if (typeof animate == 'string'){
                 this.setVisible(false, animate);
                 return this;
             }
@@ -340,7 +340,7 @@ el.animate(
          */
         show : function(animate){
             // hideMode override
-            if (Ext.isString(animate)){
+            if (typeof animate == 'string'){
                 this.setVisible(true, animate);
                 return this;
             }

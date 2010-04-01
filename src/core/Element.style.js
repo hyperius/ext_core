@@ -46,7 +46,7 @@ Ext.Element.addMethods(function(){
         // private  ==> used by Fx
         adjustWidth : function(width) {
             var me = this;
-            var isNum = Ext.isNumber(width);
+            var isNum = (typeof width == "number");
             if(isNum && me.autoBoxAdjust && !me.isBorderBox()){
                width -= (me.getBorderWidth("lr") + me.getPadding("lr"));
             }
@@ -56,7 +56,7 @@ Ext.Element.addMethods(function(){
         // private   ==> used by Fx
         adjustHeight : function(height) {
             var me = this;
-            var isNum = Ext.isNumber(height);
+            var isNum = (typeof height == "number");
             if(isNum && me.autoBoxAdjust && !me.isBorderBox()){
                height -= (me.getBorderWidth("tb") + me.getPadding("tb"));
             }
@@ -166,7 +166,7 @@ Ext.Element.addMethods(function(){
                         display,
                         wk = Ext.isWebKit,
                         display;
-                        
+
                     if(el == document){
                         return null;
                     }
@@ -221,7 +221,7 @@ Ext.Element.addMethods(function(){
          */
         getColor : function(attr, defaultValue, prefix){
             var v = this.getStyle(attr),
-                color = Ext.isDefined(prefix) ? prefix : '#',
+                color = (typeof prefix != 'undefined') ? prefix : '#',
                 h;
 
             if(!v || /transparent|inherit/.test(v)){
@@ -249,7 +249,7 @@ Ext.Element.addMethods(function(){
             var tmp,
                 style,
                 camel;
-            if (!Ext.isObject(prop)) {
+            if (typeof prop != 'object') {
                 tmp = {};
                 tmp[prop] = value;
                 prop = tmp;
