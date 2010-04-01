@@ -1,3 +1,9 @@
+/*!
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
 /**
  * @class Ext.EventManager
  * Registers event handlers that want to receive a normalized EventObject instead of the standard browser event and provides
@@ -242,7 +248,7 @@ Ext.EventManager = function(){
     };
 
     function listen(element, ename, opt, fn, scope){
-        var o = !Ext.isObject(opt) ? {} : opt,
+        var o = (!opt || typeof opt == "boolean") ? {} : opt,
             el = Ext.getDom(element), task;
 
         fn = fn || o.fn;
@@ -330,7 +336,7 @@ Ext.EventManager = function(){
          * <p>See {@link Ext.Element#addListener} for examples of how to use these options.</p>
          */
         addListener : function(element, eventName, fn, scope, options){
-            if(Ext.isObject(eventName)){
+            if(typeof eventName == 'object'){
                 var o = eventName, e, val;
                 for(e in o){
                     val = o[e];
@@ -510,7 +516,7 @@ Ext.EventManager = function(){
                 conn,
                 tid,
                 ajax = Ext.lib.Ajax;
-            (Ext.isObject(ajax.conn)) ? conn = ajax.conn : conn = {};
+            (typeof ajax.conn == 'object') ? conn = ajax.conn : conn = {};
             for (tid in conn) {
                 c = conn[tid];
                 if (c) {
