@@ -84,6 +84,9 @@
         },{
             text: 'JSON.js',
             path: 'src/util/'
+        },{
+            text: 'Loader.js',
+            path: 'src/core/'
         }]
     }],
     resources: [{
