@@ -1,10 +1,3 @@
-/*!
- * Ext JS Library 3.2.0
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-
 // for old browsers
 window.undefined = window.undefined;
 
