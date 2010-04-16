@@ -1,9 +1,3 @@
-/*!
- * Ext JS Library 3.2.0
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
 /**
  * @class Ext.EventManager
  * Registers event handlers that want to receive a normalized EventObject instead of the standard browser event and provides
@@ -619,10 +613,11 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
             cls.push("ext-linux");
         }
 
-        if(Ext.isStrict || Ext.isBorderBox){ // add to the parent to allow for selectors like ".ext-strict .ext-ie"
+        // add to the parent to allow for selectors like ".ext-strict .ext-ie"
+        if(Ext.isStrict || Ext.isBorderBox){
             var p = bd.parentNode;
             if(p){
-                p.className += Ext.isStrict ? ' ext-strict' : ' ext-border-box';
+                p.className += ((Ext.isStrict && Ext.isIE ) || (!Ext.enableForcedBoxModel && !Ext.isIE)) ? ' ext-strict' : ' ext-border-box';
             }
         }
         // Forced border box model class applied to all elements. Bypassing javascript based box model adjustments
