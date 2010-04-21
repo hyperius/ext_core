@@ -132,7 +132,7 @@ Ext.DomHelper = function(){
         tableRe = /^table|tbody|tr|td$/i,
         confRe = /tag|children|cn|html$/i,
         tableElRe = /td|tr|tbody/i,
-        trimRe = /\s*(?::|;)\s*/,
+        cssRe = /([a-z0-9-]+)\s*:\s*([^;\s]+(?:\s*[^;\s]+)*);?/gi,
         endRe = /end/i,
         pub,
         // kill repeat to save bytes
@@ -278,16 +278,16 @@ Ext.DomHelper = function(){
             if(styles){
                 var i = 0,
                     len,
-                    style;
+                    style,
+                    matches;
 
                 el = Ext.fly(el);
                 if(typeof styles == "function"){
                     styles = styles.call();
                 }
                 if(typeof styles == "string"){
-                    styles = styles.trim().split(trimRe);
-                    for(len = styles.length; i < len;){
-                        el.setStyle(styles[i++], styles[i++]);
+                    while((matches = cssRe.exec(styles))){
+                        el.setStyle(matches[1], matches[2]);
                     }
                 }else if (typeof styles == "object"){
                     el.setStyle(styles);
