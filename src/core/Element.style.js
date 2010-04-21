@@ -96,6 +96,7 @@ Ext.Element.addMethods(function(){
             }
             return me;
         },
+
         /**
          * Removes one or more CSS classes from the element.
          * @param {String/Array} className The CSS class to remove, or an array of classes
@@ -106,6 +107,7 @@ Ext.Element.addMethods(function(){
                 i,
                 idx,
                 len,
+                cls,
                 elClasses;
             if (!Ext.isArray(className)){
                 className = [className];
@@ -113,7 +115,8 @@ Ext.Element.addMethods(function(){
             if (me.dom && me.dom.className) {
                 elClasses = me.dom.className.replace(trimRe, '').split(spacesRe);
                 for (i = 0, len = className.length; i < len; i++) {
-                    idx = elClasses.indexOf(className[i]);
+                    cls = className[i].replace(trimRe, '');
+                    idx = elClasses.indexOf(cls);
                     if (idx != -1) {
                         elClasses.splice(idx, 1);
                     }
