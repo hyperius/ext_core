@@ -10,6 +10,7 @@ Ext.Element.addMethods(function(){
         propFloat = Ext.isIE ? 'styleFloat' : 'cssFloat',
         opacityRe = /alpha\(opacity=(.*)\)/i,
         trimRe = /^\s+|\s+$/g,
+        spacesRe = /\s+/,
         wordsRe = /\w/g,
         EL = Ext.Element,
         PADDING = "padding",
@@ -78,15 +79,15 @@ Ext.Element.addMethods(function(){
                 cls = [];
             // Separate case is for speed
             if (!Ext.isArray(className)) {
-                if (className && !this.hasClass(className)) {
-                    me.dom.className += " " + className;
+                if (typeof className == 'string' && !this.hasClass(className)) {
+                    me.dom.className += " " + className.replace(trimRe, '');
                 }
             }
             else {
                 for (i = 0, len = className.length; i < len; i++) {
                     v = className[i];
-                    if (v && !me.hasClass(v)) {
-                        cls.push(v);
+                    if (typeof v == 'string' && !me.hasClass(v)) {
+                        cls.push(v.replace(trimRe, ''));
                     }
                 }
                 if (cls.length) {
@@ -110,7 +111,7 @@ Ext.Element.addMethods(function(){
                 className = [className];
             }
             if (me.dom && me.dom.className) {
-                elClasses = me.dom.className.trim().split(" ");
+                elClasses = me.dom.className.replace(trimRe, '').split(spacesRe);
                 for (i = 0, len = className.length; i < len; i++) {
                     elClasses.remove(className[i]);
                 }
