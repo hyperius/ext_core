@@ -80,14 +80,14 @@ Ext.Element.addMethods(function(){
             // Separate case is for speed
             if (!Ext.isArray(className)) {
                 if (typeof className == 'string' && !this.hasClass(className)) {
-                    me.dom.className += " " + className.replace(trimRe, '');
+                    me.dom.className += " " + className;
                 }
             }
             else {
                 for (i = 0, len = className.length; i < len; i++) {
                     v = className[i];
-                    if (typeof v == 'string' && !me.hasClass(v)) {
-                        cls.push(v.replace(trimRe, ''));
+                    if (typeof v == 'string' && (' ' + me.dom.className + ' ').indexOf(' ' + v + ' ') == -1) {
+                        cls.push(v);
                     }
                 }
                 if (cls.length) {
@@ -96,7 +96,6 @@ Ext.Element.addMethods(function(){
             }
             return me;
         },
-
         /**
          * Removes one or more CSS classes from the element.
          * @param {String/Array} className The CSS class to remove, or an array of classes
@@ -105,6 +104,7 @@ Ext.Element.addMethods(function(){
         removeClass : function(className){
             var me = this,
                 i,
+                idx,
                 len,
                 elClasses;
             if (!Ext.isArray(className)){
@@ -113,7 +113,10 @@ Ext.Element.addMethods(function(){
             if (me.dom && me.dom.className) {
                 elClasses = me.dom.className.replace(trimRe, '').split(spacesRe);
                 for (i = 0, len = className.length; i < len; i++) {
-                    elClasses.remove(className[i]);
+                    idx = elClasses.indexOf(className[i]);
+                    if (idx != -1) {
+                        elClasses.splice(idx, 1);
+                    }
                 }
                 me.dom.className = elClasses.join(" ");
             }
