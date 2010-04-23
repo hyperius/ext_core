@@ -115,10 +115,13 @@ Ext.Element.addMethods(function(){
             if (me.dom && me.dom.className) {
                 elClasses = me.dom.className.replace(trimRe, '').split(spacesRe);
                 for (i = 0, len = className.length; i < len; i++) {
-                    cls = className[i].replace(trimRe, '');
-                    idx = elClasses.indexOf(cls);
-                    if (idx != -1) {
-                        elClasses.splice(idx, 1);
+                    cls = className[i];
+                    if (typeof cls == 'string') {
+                        cls = cls.replace(trimRe, '');
+                        idx = elClasses.indexOf(cls);
+                        if (idx != -1) {
+                            elClasses.splice(idx, 1);
+                        }
                     }
                 }
                 me.dom.className = elClasses.join(" ");
