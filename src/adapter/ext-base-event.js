@@ -236,8 +236,8 @@ Ext.lib.Event = function() {
         getRelatedTarget : function(ev) {
             ev = ev.browserEvent || ev;
             return this.resolveTextNode(ev.relatedTarget ||
-                    (ev.type == MOUSEOUT ? ev.toElement :
-                     ev.type == MOUSEOVER ? ev.fromElement : null));
+                (/(mouseout|mouseleave)/.test(ev.type) ? ev.toElement :
+                 /(mouseover|mouseenter)/.test(ev.type) ? ev.fromElement : null));
         },
 
         getPageX : function(ev) {
