@@ -436,10 +436,10 @@ Ext.DomQuery = function(){
         compile : function(path, type){
             type = type || "select";
 
-	    // setup fn preamble
+    	    // setup fn preamble
             var fn = ["var f = function(root){\n var mode; ++batch; var n = root || document;\n"],
-		mode,		
-		lastPath,
+        		mode,		
+        		lastPath,
             	matchers = Ext.DomQuery.matchers,
             	matchersLn = matchers.length,
             	modeMatch,

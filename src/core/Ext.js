@@ -392,7 +392,7 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
                  } :
                  function(a, i, j){
                      return Array.prototype.slice.call(a, i || 0, j || a.length);
-                 }
+                 };
          }(),
 
         isIterable : function(v){
@@ -483,6 +483,22 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
                 }
             }
         },
+        
+        /**
+         * @private
+         * Experimental - loads the given package and executes the callback when ready
+         * @param {String} pkg The package to load
+         * @param {Function} callback The callback function to execute
+         * @param {Object} scope The scope in which to execute the callback function (optional)
+         */
+        load: function(pkg, callback, scope) {
+            var files = [];
+            
+            //just hard-coding the load of ext-all-no-core.js for now
+            files.push('pkgs/ext-all-no-core.js');
+            
+            Ext.Loader.load(files, callback, scope);
+        },
 
         /**
          * Return the dom node for the passed String (id), dom node, or Ext.Element.
@@ -560,7 +576,7 @@ function(el){
                     d.innerHTML = '';
                     delete Ext.elCache[n.id];
                 }
-            }
+            };
         }() : function(n){
             if(n && n.parentNode && n.tagName != 'BODY'){
                 (Ext.enableNestedListenerRemoval) ? Ext.EventManager.purgeElement(n, true) : Ext.EventManager.removeAll(n);

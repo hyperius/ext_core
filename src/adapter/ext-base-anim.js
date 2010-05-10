@@ -370,7 +370,6 @@
         Ext.extend(EXTLIB.Motion, Ext.lib.AnimBase);
 
         var superclass = EXTLIB.Motion.superclass,
-            proto = EXTLIB.Motion.prototype,
             pointsRe = /^points$/i;
 
         Ext.apply(EXTLIB.Motion.prototype, {

@@ -159,7 +159,6 @@ Ext.DomHelper = function(){
             attr,
             val,
             key,
-            keyVal,
             cn;
 
         if(typeof o == "string"){
@@ -275,21 +274,18 @@ Ext.DomHelper = function(){
          * a function which returns such a specification.
          */
         applyStyles : function(el, styles){
-            if(styles){
-                var i = 0,
-                    len,
-                    style,
-                    matches;
+            if (styles) {
+                var matches;
 
                 el = Ext.fly(el);
-                if(typeof styles == "function"){
+                if (typeof styles == "function") {
                     styles = styles.call();
                 }
-                if(typeof styles == "string"){
-                    while((matches = cssRe.exec(styles))){
+                if (typeof styles == "string") {
+                    while ((matches = cssRe.exec(styles))) {
                         el.setStyle(matches[1], matches[2]);
                     }
-                }else if (typeof styles == "object"){
+                } else if (typeof styles == "object") {
                     el.setStyle(styles);
                 }
             }

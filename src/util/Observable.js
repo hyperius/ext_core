@@ -219,11 +219,11 @@ myGridPanel.on({
         var me = this,
             e,
             oe,
-            isF,
-        ce;
+            ce;
+            
         if (typeof eventName == 'object') {
             o = eventName;
-            for (e in o){
+            for (e in o) {
                 oe = o[e];
                 if (!me.filterOptRe.test(e)) {
                     me.addListener(e, oe.fn || oe, oe.scope || o.scope, oe.fn ? oe : o);
