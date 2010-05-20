@@ -22,6 +22,8 @@ Ext = {
 
 /**
  * Copies all the properties of config to obj.
+ * If defaults are specified, they will be copied to the object BEFORE anything
+ * from the config is copied to the object.
  * @param {Object} obj The receiver of the properties
  * @param {Object} config The source of the properties
  * @param {Object} defaults A different object that will also be applied for default values
