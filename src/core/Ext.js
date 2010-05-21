@@ -848,14 +848,18 @@ sayHiToFriend('Brian'); // alerts "Hi, Brian"
                 this :
                 function() {
                     var me = this,
-                        args = arguments;
+                        args = arguments,
+                        ret;
+                        
                     fcn.target = me;
                     fcn.method = method;
-                    return (fcn.apply(scope || me || window, args) !== false) ?
-                            method.apply(me || window, args) :
-                            null;
+                    ret = fcn.apply(scope || me || window, args);
+                    delete fcn.target;
+                    delete fcn.method;
+                    return ret  !== false ? method.apply(me || window, args) : null;
                 };
     },
+    
 
      /**
      * Creates a callback that passes arguments[0], arguments[1], arguments[2], ...
