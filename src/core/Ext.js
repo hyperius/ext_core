@@ -1,3 +1,10 @@
+/*!
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+
 // for old browsers
 window.undefined = window.undefined;
 
@@ -22,8 +29,6 @@ Ext = {
 
 /**
  * Copies all the properties of config to obj.
- * If defaults are specified, they will be copied to the object BEFORE anything
- * from the config is copied to the object.
  * @param {Object} obj The receiver of the properties
  * @param {Object} config The source of the properties
  * @param {Object} defaults A different object that will also be applied for default values
@@ -485,22 +490,6 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
                 }
             }
         },
-        
-        /**
-         * @private
-         * Experimental - loads the given package and executes the callback when ready
-         * @param {String} pkg The package to load
-         * @param {Function} callback The callback function to execute
-         * @param {Object} scope The scope in which to execute the callback function (optional)
-         */
-        load: function(pkg, callback, scope) {
-            var files = [];
-            
-            //just hard-coding the load of ext-all-no-core.js for now
-            files.push('pkgs/ext-all-no-core.js');
-            
-            Ext.Loader.load(files, callback, scope);
-        },
 
         /**
          * Return the dom node for the passed String (id), dom node, or Ext.Element.
@@ -557,6 +546,22 @@ function(el){
         getBody : function(){
             return Ext.get(DOC.body || DOC.documentElement);
         },
+        
+        /**
+         * Returns the current document body as an {@link Ext.Element}.
+         * @return Ext.Element The document body
+         */
+        getHead : function() {
+            var head;
+            
+            return function() {
+                if (head == undefined) {
+                    head = Ext.get(DOC.getElementsByTagName("head")[0]);
+                }
+                
+                return head;
+            };
+        }(),
 
         /**
          * Removes a DOM node from the document.
@@ -848,18 +853,14 @@ sayHiToFriend('Brian'); // alerts "Hi, Brian"
                 this :
                 function() {
                     var me = this,
-                        args = arguments,
-                        ret;
-                        
+                        args = arguments;
                     fcn.target = me;
                     fcn.method = method;
-                    ret = fcn.apply(scope || me || window, args);
-                    delete fcn.target;
-                    delete fcn.method;
-                    return ret  !== false ? method.apply(me || window, args) : null;
+                    return (fcn.apply(scope || me || window, args) !== false) ?
+                            method.apply(me || window, args) :
+                            null;
                 };
     },
-    
 
      /**
      * Creates a callback that passes arguments[0], arguments[1], arguments[2], ...
