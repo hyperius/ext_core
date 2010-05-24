@@ -1,9 +1,3 @@
-/*!
- * Ext JS Library 3.2.0
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
 /**
  * @class Ext.DomHelper
  * <p>The DomHelper class provides a layer of abstraction from DOM and transparently supports creating
@@ -138,7 +132,7 @@ Ext.DomHelper = function(){
         tableRe = /^table|tbody|tr|td$/i,
         confRe = /tag|children|cn|html$/i,
         tableElRe = /td|tr|tbody/i,
-        trimRe = /\s*(?::|;)\s*/,
+        cssRe = /([a-z0-9-]+)\s*:\s*([^;\s]+(?:\s*[^;\s]+)*);?/gi,
         endRe = /end/i,
         pub,
         // kill repeat to save bytes
@@ -165,7 +159,6 @@ Ext.DomHelper = function(){
             attr,
             val,
             key,
-            keyVal,
             cn;
 
         if(typeof o == "string"){
@@ -281,21 +274,18 @@ Ext.DomHelper = function(){
          * a function which returns such a specification.
          */
         applyStyles : function(el, styles){
-            if(styles){
-                var i = 0,
-                    len,
-                    style;
+            if (styles) {
+                var matches;
 
                 el = Ext.fly(el);
-                if(typeof styles == "function"){
+                if (typeof styles == "function") {
                     styles = styles.call();
                 }
-                if(typeof styles == "string"){
-                    styles = styles.trim().split(trimRe);
-                    for(len = styles.length; i < len;){
-                        el.setStyle(styles[i++], styles[i++]);
+                if (typeof styles == "string") {
+                    while ((matches = cssRe.exec(styles))) {
+                        el.setStyle(matches[1], matches[2]);
                     }
-                }else if (typeof styles == "object"){
+                } else if (typeof styles == "object") {
                     el.setStyle(styles);
                 }
             }

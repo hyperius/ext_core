@@ -407,7 +407,7 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
                  } :
                  function(a, i, j){
                      return Array.prototype.slice.call(a, i || 0, j || a.length);
-                 }
+                 };
          }(),
 
         isIterable : function(v){
@@ -554,6 +554,22 @@ function(el){
         getBody : function(){
             return Ext.get(DOC.body || DOC.documentElement);
         },
+        
+        /**
+         * Returns the current document body as an {@link Ext.Element}.
+         * @return Ext.Element The document body
+         */
+        getHead : function() {
+            var head;
+            
+            return function() {
+                if (head == undefined) {
+                    head = Ext.get(DOC.getElementsByTagName("head")[0]);
+                }
+                
+                return head;
+            };
+        }(),
 
         /**
          * Removes a DOM node from the document.
@@ -575,7 +591,7 @@ function(el){
                     d.innerHTML = '';
                     delete Ext.elCache[n.id];
                 }
-            }
+            };
         }() : function(n){
             if(n && n.parentNode && n.tagName != 'BODY'){
                 (Ext.enableNestedListenerRemoval) ? Ext.EventManager.purgeElement(n, true) : Ext.EventManager.removeAll(n);

@@ -1,9 +1,3 @@
-/*!
- * Ext JS Library 3.2.0
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
 (function(){
 
 var EXTUTIL = Ext.util,
@@ -225,11 +219,11 @@ myGridPanel.on({
         var me = this,
             e,
             oe,
-            isF,
-        ce;
+            ce;
+            
         if (typeof eventName == 'object') {
             o = eventName;
-            for (e in o){
+            for (e in o) {
                 oe = o[e];
                 if (!me.filterOptRe.test(e)) {
                     me.addListener(e, oe.fn || oe, oe.scope || o.scope, oe.fn ? oe : o);
@@ -417,7 +411,8 @@ EXTUTIL.Event.prototype = {
     },
 
     createListener: function(fn, scope, o){
-        o = o || {}, scope = scope || this.obj;
+        o = o || {};
+        scope = scope || this.obj;
         var l = {
             fn: fn,
             scope: scope,
