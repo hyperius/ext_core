@@ -1,9 +1,3 @@
-/*!
- * Ext JS Library 3.2.0
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
 /**
  * @class Ext.EventManager
  * Registers event handlers that want to receive a normalized EventObject instead of the standard browser event and provides
@@ -661,6 +655,7 @@ Ext.EventManager.addListener("myDiv", 'click', handleClick);
  */
 Ext.EventObject = function(){
     var E = Ext.lib.Event,
+        clickRe = /(dbl)?click/,
         // safari keypress events for special keys return bad keycodes
         safariKeys = {
             3 : 13, // enter
@@ -695,7 +690,7 @@ Ext.EventObject = function(){
             if(e){
                 // normalize buttons
                 me.button = e.button ? btnMap[e.button] : (e.which ? e.which - 1 : -1);
-                if(e.type == 'click' && me.button == -1){
+                if(clickRe.test(e.type) && me.button == -1){
                     me.button = 0;
                 }
                 me.type = e.type;

@@ -196,18 +196,17 @@ Ext.CompositeElementLite.prototype = {
     filter : function(selector){
         var els = [],
             me = this,
-            elements = me.elements,
             fn = Ext.isFunction(selector) ? selector
                 : function(el){
                     return el.is(selector);
                 };
 
-
-        me.each(function(el, self, i){
-            if(fn(el, i) !== false){
+        me.each(function(el, self, i) {
+            if (fn(el, i) !== false) {
                 els[els.length] = me.transformElement(el);
             }
         });
+        
         me.elements = els;
         return me;
     },
