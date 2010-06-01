@@ -37,6 +37,7 @@
      * <p>Be aware that file upload packets are sent with the content type <a href="http://www.faqs.org/rfcs/rfc2388.html">multipart/form</a>
      * and some server technologies (notably JEE) may require some custom processing in order to
      * retrieve parameter names and parameter values from the packet content.</p>
+     * <p>Also note that it's not possible to check the response code of the hidden iframe, so the success handler will ALWAYS fire.</p>
      * @constructor
      * @param {Object} config a configuration object.
      */
