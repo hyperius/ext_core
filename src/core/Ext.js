@@ -1,10 +1,3 @@
-/*!
- * Ext JS Library 3.2.0
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-
 // for old browsers
 window.undefined = window.undefined;
 
@@ -19,11 +12,11 @@ Ext = {
      * The version of the framework
      * @type String
      */
-    version : '3.2.1',
+    version : '3.2.2',
     versionDetail : {
         major: 3,
         minor: 2,
-        patch: 1
+        patch: 2
     }
 };
 
