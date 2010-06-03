@@ -613,13 +613,20 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
             cls.push("ext-linux");
         }
 
-        if(Ext.isStrict || Ext.isBorderBox){ // add to the parent to allow for selectors like ".ext-strict .ext-ie"
+        // add to the parent to allow for selectors like ".ext-strict .ext-ie"
+        if(Ext.isStrict || Ext.isBorderBox){
             var p = bd.parentNode;
             if(p){
-                p.className += Ext.isStrict ? ' ext-strict' : ' ext-border-box';
+                Ext.fly(p, '_internal').addClass(((Ext.isStrict && Ext.isIE ) || (!Ext.enableForcedBoxModel && !Ext.isIE)) ? ' ext-strict' : ' ext-border-box');
             }
         }
-        bd.className += cls.join(' ');
+        // Forced border box model class applied to all elements. Bypassing javascript based box model adjustments
+        // in favor of css.  This is for non-IE browsers.
+        if (Ext.enableForcedBoxModel && !Ext.isIE) {
+            Ext.isForcedBorderBox = true;
+            cls.push("ext-forced-border-box");
+        }
+        Ext.fly(bd, '_internal').addClass(cls);
         return true;
     }
 
