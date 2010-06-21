@@ -13,7 +13,8 @@ Ext.lib.Ajax = function() {
     // private
     function setHeader(o) {
         var conn = o.conn,
-            prop;
+            prop,
+            headers = {};
 
         function setTheHeaders(conn, headers){
             for (prop in headers) {
@@ -23,14 +24,9 @@ Ext.lib.Ajax = function() {
             }
         }
 
-        if (pub.defaultHeaders) {
-            setTheHeaders(conn, pub.defaultHeaders);
-        }
-
-        if (pub.headers) {
-            setTheHeaders(conn, pub.headers);
-            delete pub.headers;
-        }
+        Ext.apply(headers, pub.headers, pub.defaultHeaders);
+        setTheHeaders(conn, headers);
+        delete pub.headers;
     }
 
     // private
