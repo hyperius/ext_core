@@ -201,7 +201,9 @@ Ext.Element.addMethods(function(){
                     out = (v = el.style[prop]) ? v :
                            (cs = view.getComputedStyle(el, "")) ? cs[prop] : null;
                            
-                    if(prop == 'marginRight' && !supports.correctRightMargin){
+                    // Ignore cases when the margin is correctly reported as 0, the bug only shows
+                    // numbers larger.
+                    if(prop == 'marginRight' && out != '0px' && !supports.correctRightMargin){
                         display = this.getStyle('display');
                         el.style.display = 'inline-block';
                         out = view.getComputedStyle(el, '').marginRight;
