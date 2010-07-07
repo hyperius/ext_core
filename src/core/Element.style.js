@@ -3,13 +3,12 @@
  */
 Ext.Element.addMethods(function(){
     // local style camelizing for speed
-    var propCache = {},
+    var supports = Ext.supports,
+        propCache = {},
         camelRe = /(-[a-z])/gi,
         view = document.defaultView,
-        propFloat = Ext.isIE ? 'styleFloat' : 'cssFloat',
         opacityRe = /alpha\(opacity=(.*)\)/i,
         trimRe = /^\s+|\s+$/g,
-        marginRightRe = /marginRight/,
         EL = Ext.Element,
         spacesRe = /\s+/,
         wordsRe = /\w/g,
@@ -41,7 +40,7 @@ Ext.Element.addMethods(function(){
     }
 
     function chkCache(prop) {
-        return propCache[prop] || (propCache[prop] = prop == 'float' ? propFloat : prop.replace(camelRe, camelFn));
+        return propCache[prop] || (propCache[prop] = prop == 'float' ? (supports.cssFloat ? 'cssFloat' : 'styleFloat') : prop.replace(camelRe, camelFn));
     }
 
     return {
@@ -193,7 +192,6 @@ Ext.Element.addMethods(function(){
                         v,
                         cs,
                         out,
-                        wk = Ext.isWebKit,
                         display;
 
                     if(el == document){
@@ -202,15 +200,17 @@ Ext.Element.addMethods(function(){
                     prop = chkCache(prop);
                     out = (v = el.style[prop]) ? v :
                            (cs = view.getComputedStyle(el, "")) ? cs[prop] : null;
-                    // Fix bug caused by this: https://bugs.webkit.org/show_bug.cgi?id=13343
-                    if(wk && marginRightRe.test(prop) && out != '0px'){
+                           
+                    // Ignore cases when the margin is correctly reported as 0, the bug only shows
+                    // numbers larger.
+                    if(prop == 'marginRight' && out != '0px' && !supports.correctRightMargin){
                         display = this.getStyle('display');
                         el.style.display = 'inline-block';
-                        out = view.getComputedStyle(el, '');
+                        out = view.getComputedStyle(el, '').marginRight;
                         el.style.display = display;
                     }
-                    // Webkit returns rgb values for transparent.
-                    if(wk && out == 'rgba(0, 0, 0, 0)'){
+                    
+                    if(prop == 'backgroundColor' && out == 'rgba(0, 0, 0, 0)' && !supports.correctTransparentColor){
                         out = 'transparent';
                     }
                     return out;

@@ -635,6 +635,57 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
     }
 })();
 
+/**
+ * Code used to detect certain browser feature/quirks/bugs at startup.
+ */
+(function(){
+    var supports = Ext.apply(Ext.supports, {
+        /**
+         * In Webkit, there is an issue with getting the margin right property, see
+         * https://bugs.webkit.org/show_bug.cgi?id=13343
+         */
+        correctRightMargin: true,
+        
+        /**
+         * Webkit browsers return rgba(0, 0, 0) when a transparent color is used
+         */
+        correctTransparentColor: true,
+        
+        /**
+         * IE uses styleFloat, not cssFloat for the float property.
+         */
+        cssFloat: true
+    });
+    var supportTests = function(){
+            var div = document.createElement('div'),
+                doc = document,
+                view,
+                last;
+                
+            div.innerHTML = '<div style="height:30px;width:50px;"><div style="height:20px;width:20px;"></div></div><div style="float:left;background-color:transparent;">';
+            doc.body.appendChild(div);
+            last = div.lastChild;
+            
+            if((view = doc.defaultView)){
+                if(view.getComputedStyle(div.firstChild.firstChild, null).marginRight != '0px'){
+                    supports.correctRightMargin = false;
+                }
+                if(view.getComputedStyle(last, null).backgroundColor != 'transparent'){
+                    supports.correctTransparentColor = false;
+                }
+            }
+            supports.cssFloat = !!last.style.cssFloat;
+            doc.body.removeChild(div);
+    }
+    
+    if(Ext.isReady){
+        supportTests();    
+    }else{
+        Ext.onReady(supportTests);
+    }
+    
+})();
+
 
 /**
  * @class Ext.EventObject
