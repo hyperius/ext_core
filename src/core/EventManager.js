@@ -728,8 +728,7 @@ Ext.EventObject = function(){
             63275 : 35  // end
         },
         // normalize button clicks
-        btnMap = Ext.isIE ? {1:0,4:1,2:2} :
-                (Ext.isWebKit ? {1:0,2:1,3:2} : {0:0,1:1,2:2});
+        btnMap = Ext.isIE ? {1:0,4:1,2:2} : {0:0,1:1,2:2};
 
     Ext.EventObjectImpl = function(e){
         if(e){
