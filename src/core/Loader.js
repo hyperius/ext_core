@@ -73,7 +73,7 @@ Ext.Loader = Ext.apply({}, {
         script.type = "text/javascript";
         script.src  = filename;
         
-        //IE has a different way of handling <script> loads, so we need to check for it here
+        //IE has a different way of handling &lt;script&gt; loads, so we need to check for it here
         if (script.readyState) {
             script.onreadystatechange = function() {
                 if (script.readyState == "loaded" || script.readyState == "complete") {
