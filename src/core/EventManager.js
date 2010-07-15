@@ -630,7 +630,11 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
         return true;
     }
 
-    if(!initExtCss()){
+    /*
+     * Assert Ext.isReady here. If Ext is loaded after the document is ready, none of the native 
+     * DOM onReady events will fire, because they have already passed.
+     */
+    if(!(Ext.isReady = initExtCss())){
         Ext.onReady(initExtCss);
     }
 })();
