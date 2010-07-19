@@ -29,7 +29,7 @@ All selectors, attribute filters and pseudos below can be combined infinitely in
     <li> <b>E[foo$=bar]</b> has an attribute "foo" that ends with "bar"</li>
     <li> <b>E[foo*=bar]</b> has an attribute "foo" that contains the substring "bar"</li>
     <li> <b>E[foo%=2]</b> has an attribute "foo" that is evenly divisible by 2</li>
-    <li> <b>E[foo!=bar]</b> has an attribute "foo" that does not equal "bar"</li>
+    <li> <b>E[foo!=bar]</b> attribute "foo" does not equal "bar"</li>
 </ul>
 <h4>Pseudo Classes:</h4>
 <ul class="list">
