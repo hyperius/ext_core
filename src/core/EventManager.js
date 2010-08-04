@@ -527,13 +527,13 @@ Ext.EventManager = function(){
          * <code>{single: true}</code> be used so that the handler is removed on first invocation.
          */
         onDocumentReady : function(fn, scope, options){
-            if(Ext.isReady){ // if it already fired or document.body is present
+            if (Ext.isReady) { // if it already fired or document.body is present
                 docReadyEvent || (docReadyEvent = new Ext.util.Event());
                 docReadyEvent.addListener(fn, scope, options);
                 docReadyEvent.fire();
                 docReadyEvent.listeners = [];
-            }else{
-                if(!docReadyEvent){
+            } else {
+                if (!docReadyEvent) {
                     initDocReady();
                 }
                 options = options || {};
@@ -589,34 +589,36 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
 
 //Initialize doc classes
 (function(){
-
-    var initExtCss = function(){
+    var initExtCss = function() {
         // find the body element
         var bd = document.body || document.getElementsByTagName('body')[0];
-        if(!bd){ return false; }
+        if (!bd) {
+            return false;
+        }
+        
         var cls = [' ',
                 Ext.isIE ? "ext-ie " + (Ext.isIE6 ? 'ext-ie6' : (Ext.isIE7 ? 'ext-ie7' : 'ext-ie8'))
                 : Ext.isGecko ? "ext-gecko " + (Ext.isGecko2 ? 'ext-gecko2' : 'ext-gecko3')
                 : Ext.isOpera ? "ext-opera"
                 : Ext.isWebKit ? "ext-webkit" : ""];
 
-        if(Ext.isSafari){
+        if (Ext.isSafari) {
             cls.push("ext-safari " + (Ext.isSafari2 ? 'ext-safari2' : (Ext.isSafari3 ? 'ext-safari3' : 'ext-safari4')));
-        }else if(Ext.isChrome){
+        } else if(Ext.isChrome) {
             cls.push("ext-chrome");
         }
 
-        if(Ext.isMac){
+        if (Ext.isMac) {
             cls.push("ext-mac");
         }
-        if(Ext.isLinux){
+        if (Ext.isLinux) {
             cls.push("ext-linux");
         }
 
         // add to the parent to allow for selectors like ".ext-strict .ext-ie"
-        if(Ext.isStrict || Ext.isBorderBox){
+        if (Ext.isStrict || Ext.isBorderBox) {
             var p = bd.parentNode;
-            if(p){
+            if (p) {
                 Ext.fly(p, '_internal').addClass(((Ext.isStrict && Ext.isIE ) || (!Ext.enableForcedBoxModel && !Ext.isIE)) ? ' ext-strict' : ' ext-border-box');
             }
         }
@@ -626,15 +628,18 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
             Ext.isForcedBorderBox = true;
             cls.push("ext-forced-border-box");
         }
+        
         Ext.fly(bd, '_internal').addClass(cls);
         return true;
-    }
+    };
 
     /*
      * Assert Ext.isReady here. If Ext is loaded after the document is ready, none of the native 
      * DOM onReady events will fire, because they have already passed.
      */
-    if(!(Ext.isReady = initExtCss())){
+    Ext.isReady = initExtCss();
+    
+    if (Ext.isReady) {
         Ext.onReady(initExtCss);
     }
 })();
@@ -660,6 +665,7 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
          */
         cssFloat: true
     });
+    
     var supportTests = function(){
             var div = document.createElement('div'),
                 doc = document,
@@ -680,14 +686,13 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
             }
             supports.cssFloat = !!last.style.cssFloat;
             doc.body.removeChild(div);
-    }
+    };
     
-    if(Ext.isReady){
+    if (Ext.isReady) {
         supportTests();    
-    }else{
+    } else {
         Ext.onReady(supportTests);
     }
-    
 })();
 
 
@@ -827,7 +832,7 @@ Ext.EventObject = function(){
          * @return {Number} The key code
          */
         getKey : function(){
-            return this.normalizeKey(this.keyCode || this.charCode)
+            return this.normalizeKey(this.keyCode || this.charCode);
         },
 
         // private
