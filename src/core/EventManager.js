@@ -5,7 +5,6 @@
  * See {@link Ext.EventObject} for more details on normalized event objects.
  * @singleton
  */
-
 Ext.EventManager = function(){
     var docReadyEvent,
         docReadyProcId,
@@ -28,11 +27,11 @@ Ext.EventManager = function(){
         var id = false,
             i = 0,
             len = specialElCache.length,
-            id = false,
             skip = false,
             o;
-        if(el){
-            if(el.getElementById || el.navigator){
+            
+        if (el) {
+            if (el.getElementById || el.navigator) {
                 // look up the id
                 for(; i < len; ++i){
                     o = specialElCache[i];
@@ -61,7 +60,7 @@ Ext.EventManager = function(){
             }
         }
         return id;
-     };
+     }
 
     /// There is some jquery work around stuff here that isn't needed in Ext Core.
     function addListener(el, ename, fn, task, wrap, scope){
@@ -97,7 +96,7 @@ Ext.EventManager = function(){
         if(el == DOC && ename == "mousedown"){
             Ext.EventManager.stoppedMouseDownEvent.addListener(wrap);
         }
-    };
+    }
 
     function doScrollChk(){
         /* Notes:
@@ -171,7 +170,7 @@ Ext.EventManager = function(){
             docReadyEvent.listeners = [];
         }
 
-    };
+    }
 
     function initDocReady(){
         docReadyEvent || (docReadyEvent = new Ext.util.Event());
@@ -205,7 +204,7 @@ Ext.EventManager = function(){
         }
         // no matter what, make sure it fires on load
         E.on(WINDOW, "load", fireDocReady);
-    };
+    }
 
     function createTargeted(h, o){
         return function(){
@@ -214,21 +213,21 @@ Ext.EventManager = function(){
                 h.apply(this, args);
             }
         };
-    };
+    }
 
     function createBuffered(h, o, task){
         return function(e){
             // create new event object impl so new events don't wipe out properties
             task.delay(o.buffer, h, null, [new Ext.EventObjectImpl(e)]);
         };
-    };
+    }
 
     function createSingle(h, el, ename, fn, scope){
         return function(e){
             Ext.EventManager.removeListener(el, ename, fn, scope);
             h(e);
         };
-    };
+    }
 
     function createDelayed(h, o, fn){
         return function(e){
@@ -239,7 +238,7 @@ Ext.EventManager = function(){
             fn.tasks.push(task);
             task.delay(o.delay || 10, h, null, [new Ext.EventObjectImpl(e)]);
         };
-    };
+    }
 
     function listen(element, ename, opt, fn, scope){
         var o = (!opt || typeof opt == "boolean") ? {} : opt,
@@ -279,7 +278,7 @@ Ext.EventManager = function(){
             }
 
             fn.call(scope || el, e, t, o);
-        };
+        }
         if(o.target){
             h = createTargeted(h, o);
         }
@@ -296,7 +295,7 @@ Ext.EventManager = function(){
 
         addListener(el, ename, fn, task, h, scope);
         return h;
-    };
+    }
 
     var pub = {
         /**
@@ -639,7 +638,7 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
      */
     Ext.isReady = initExtCss();
     
-    if (Ext.isReady) {
+    if (!Ext.isReady) {
         Ext.onReady(initExtCss);
     }
 })();
