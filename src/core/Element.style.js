@@ -204,7 +204,7 @@ Ext.Element.addMethods(function(){
                     // Ignore cases when the margin is correctly reported as 0, the bug only shows
                     // numbers larger.
                     if(prop == 'marginRight' && out != '0px' && !supports.correctRightMargin){
-                        display = this.getStyle('display');
+                        display = el.style.display;
                         el.style.display = 'inline-block';
                         out = view.getComputedStyle(el, '').marginRight;
                         el.style.display = display;
