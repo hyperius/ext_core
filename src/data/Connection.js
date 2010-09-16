@@ -238,7 +238,7 @@ Ext.Ajax.request({
                           failure: me.handleFailure,
                           scope: me,
                           argument: {options: o},
-                          timeout : o.timeout || me.timeout
+                          timeout : Ext.num(o.timeout, me.timeout)
                     },
                     form,
                     serForm;
