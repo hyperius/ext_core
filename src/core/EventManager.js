@@ -273,7 +273,7 @@ Ext.EventManager = function(){
             if (o.stopPropagation) {
                 e.stopPropagation();
             }
-            if (o.normalized) {
+            if (o.normalized === false) {
                 e = e.browserEvent;
             }
 
