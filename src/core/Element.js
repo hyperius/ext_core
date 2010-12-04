@@ -683,19 +683,20 @@ el.un('click', this.handlerFn);
      * @param {String} namespace (optional) The namespace in which to look for the attribute
      * @return {String} The attribute value
      */
-    getAttribute : Ext.isIE ? function(name, ns){
-        var d = this.dom,
-            type = typeof d[ns + ":" + name];
-
-        if(['undefined', 'unknown'].indexOf(type) == -1){
-            return d[ns + ":" + name];
-        }
-        return d[name];
-    } : function(name, ns){
-        var d = this.dom;
-        return d.getAttributeNS(ns, name) || d.getAttribute(ns + ":" + name) || d.getAttribute(name) || d[name];
-    },
-
+    getAttribute : 'getAttribute' in document.createElement('div') ?
+        function(name, ns) {
+            var d = this.dom;
+            return (d.getAttributeNS ? d.getAttributeNS(ns, name) : null) ||
+                (ns ? d.getAttribute(ns + ":" + name) : d.getAttribute(name) || d[name]);
+        }:
+        function(name, ns) {  //likely IE < 8
+            var d = this.dom,
+                attrib = ns ?
+                    (!(/undefined|unknown/).test(typeof (attrib = d[ ns + ":" + name ])) ? attrib : undefined):
+                      d[name];
+            return attrib || '';
+        },
+        
     /**
     * Update the innerHTML of this element
     * @param {String} html The new HTML
