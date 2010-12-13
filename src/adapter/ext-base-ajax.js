@@ -238,7 +238,7 @@ Ext.lib.Ajax = function() {
         try {
             http = new XMLHttpRequest();
         } catch(e) {
-            for (var i = 0; i < activeX.length; ++i) {
+            for (var i = Ext.isIE6 ? 1 : 0; i < activeX.length; ++i) {
                 try {
                     http = new ActiveXObject(activeX[i]);
                     break;
