@@ -12,11 +12,11 @@ Ext = {
      * The version of the framework
      * @type String
      */
-    version : '3.3.1',
+    version : '3.3.2',
     versionDetail : {
         major : 3,
         minor : 3,
-        patch : 1
+        patch : 2
     }
 };
 
