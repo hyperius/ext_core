@@ -317,7 +317,6 @@ Ext.DomHelper = function(){
                 }
             }
         },
-
         /**
          * Inserts an HTML fragment into the DOM.
          * @param {String} where Where to insert the html in relation to el - beforeBegin, afterBegin, beforeEnd, afterEnd.
@@ -328,6 +327,8 @@ Ext.DomHelper = function(){
         insertHtml : function(where, el, html){
             var hash = {},
                 hashVal,
+                range,
+                rangeEl,
                 setStart,
                 frag,
                 rs;
@@ -338,36 +339,51 @@ Ext.DomHelper = function(){
             hash[afterend] = ['AfterEnd', 'nextSibling'];
 
             if (el.insertAdjacentHTML) {
-                 if(tableRe.test(el.tagName) && (rs = insertIntoTable(el.tagName.toLowerCase(), where, el, html))){
-                     return rs;
-                 }
-                 // add these two to the hash.
-                 hash[afterbegin] = ['AfterBegin', 'firstChild'];
-                 hash[beforeend] = ['BeforeEnd', 'lastChild'];
-                 if ((hashVal = hash[where])) {
-                     el.insertAdjacentHTML(hashVal[0], html);
-                     return el[hashVal[1]];
-                 }
-             } else {
-                 if (hash[where]) {
-                     frag = createContextualFragment(html);
-                     el.parentNode.insertBefore(frag, where == beforebegin ? el : el.nextSibling);
-                     return el[(where == beforebegin ? 'previous' : 'next') + 'Sibling'];
-                 } else {
-                     if (el.firstChild) {
-                         frag = createContextualFragment(html);
-                         if(where == afterbegin){
-                             el.insertBefore(frag, el.firstChild);
-                         }else{
-                             el.appendChild(frag);
-                         }
-                     } else {
-                         el.innerHTML = html;
-                     }
-                     return el[(where == afterbegin ? 'first' : 'last') + 'Child'];
-                 }
-             }
-             throw 'Illegal insertion point -> "' + where + '"';
+                if(tableRe.test(el.tagName) && (rs = insertIntoTable(el.tagName.toLowerCase(), where, el, html))){
+                    return rs;
+                }
+                // add these two to the hash.
+                hash[afterbegin] = ['AfterBegin', 'firstChild'];
+                hash[beforeend] = ['BeforeEnd', 'lastChild'];
+                if ((hashVal = hash[where])) {
+                    el.insertAdjacentHTML(hashVal[0], html);
+                    return el[hashVal[1]];
+                }
+            } else {
+                range = el.ownerDocument.createRange();
+                setStart = 'setStart' + (endRe.test(where) ? 'After' : 'Before');
+                if (hash[where]) {
+                    range[setStart](el);
+                    if (!range.createContextualFragment) {
+                        frag = createContextualFragment(html);
+                    }
+                    else {
+                        frag = range.createContextualFragment(html);
+                    }
+                    el.parentNode.insertBefore(frag, where == beforebegin ? el : el.nextSibling);
+                    return el[(where == beforebegin ? 'previous' : 'next') + 'Sibling'];
+                } else {
+                    rangeEl = (where == afterbegin ? 'first' : 'last') + 'Child';
+                    if (el.firstChild) {
+                        range[setStart](el[rangeEl]);
+                        if (!range.createContextualFragment) {
+                            frag = createContextualFragment(html);
+                        }
+                        else {
+                            frag = range.createContextualFragment(html);
+                        }
+                        if(where == afterbegin){
+                            el.insertBefore(frag, el.firstChild);
+                        }else{
+                            el.appendChild(frag);
+                        }
+                    } else {
+                        el.innerHTML = html;
+                    }
+                    return el[rangeEl];
+                }
+            }
+            throw 'Illegal insertion point -> "' + where + '"';
         },
 
         /**
