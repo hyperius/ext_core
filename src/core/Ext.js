@@ -552,7 +552,7 @@ MyGridPanel = Ext.extend(Ext.grid.GridPanel, {
             if (override) {
                 delete body.override;
                 cls = Ext.getClassByName(override);
-                Ext._override(cls, body);
+                Ext.override(cls, body);
             } else {
                 if (className) {
                     namespace = Ext.createNamespace(className, true);
@@ -583,6 +583,9 @@ MyGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 }
 
                 Ext.extend(cls, extend, body);
+                if (cls.prototype.constructor === cls) {
+                    delete cls.prototype.constructor;
+                }
 
                 // Not extending a class which derives from Base...
                 if (!cls.prototype.$isClass) {
@@ -636,16 +639,25 @@ MyGridPanel = Ext.extend(Ext.grid.GridPanel, {
          * @method override
          */
         override: function (target, overrides) {
-            var statics;
+            var proto, statics;
 
             if (overrides) {
-                statics = overrides.statics;
-                if (statics) {
-                    delete overrides.statics;
-                }
+                if (target.$isClass) {
+                    statics = overrides.statics;
+                    if (statics) {
+                        delete overrides.statics;
+                    }
 
-                if (typeof target == 'function') {
                     Ext.addMembers(target, target.prototype, overrides, true);
+                    if (statics) {
+                        Ext.addMembers(target, target, statics);
+                    }
+                } else if (typeof target == 'function') {
+                    proto = target.prototype;
+                    Ext.apply(proto, overrides);
+                    if(Ext.isIE && overrides.hasOwnProperty('toString')){
+                        proto.toString = overrides.toString;
+                    }
                 } else {
                     var owner = target.self,
                         name, value;
@@ -674,16 +686,12 @@ MyGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         }
                     } else {
                         Ext.apply(target, overrides);
+
+                        if (!target.constructor.$isClass) {
+                            target.constructor.prototype.callParent = Base.prototype.callParent;
+                            target.constructor.callParent = Base.callParent;
+                        }
                     }
-                    
-                    if (!target.constructor.$isClass) {
-                        target.constructor.prototype.callParent = Base.prototype.callParent;
-                        target.constructor.callParent = Base.callParent;
-                    }
-                    Ext.addMembers(target.constructor, target, overrides, true);
-                }
-                if (statics) {
-                    Ext.addMembers(target, target, statics);
                 }
             }
         },
