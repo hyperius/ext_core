@@ -42,14 +42,14 @@
         },
 
         getViewportHeight: function(){
-	        return Ext.isIE ? 
+	        return Ext.isIE9m ? 
 	        	   (Ext.isStrict ? doc.documentElement.clientHeight : doc.body.clientHeight) :
 	        	   self.innerHeight;
         },
 
         getViewportWidth : function() {
 	        return !Ext.isStrict && !Ext.isOpera ? doc.body.clientWidth :
-	        	   Ext.isIE ? doc.documentElement.clientWidth : self.innerWidth;
+	        	   Ext.isIE9m ? doc.documentElement.clientWidth : self.innerWidth;
         },
         
         getY : function(el) {

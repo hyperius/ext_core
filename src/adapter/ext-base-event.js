@@ -311,7 +311,7 @@ Ext.lib.Event = function() {
         _load : function(e) {
             loadComplete = true;
             
-            if (Ext.isIE && e !== true) {
+            if (Ext.isIE9m && e !== true) {
                 // IE8 complains that _load is null or not an object
                 // so lets remove self via arguments.callee
                 doRemove(win, "load", arguments.callee);
