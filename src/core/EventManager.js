@@ -611,7 +611,7 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
         if (Ext.isIE) {
             // Only treat IE9 and less like IE in the css
             if (!Ext.isIE10p) {
-                cls.push('x-ie');
+                cls.push('ext-ie');
             }
             if (Ext.isIE6) {
                 cls.push('ext-ie6');
