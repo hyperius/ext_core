@@ -5,7 +5,6 @@
 * http://developer.yahoo.net/yui/license.txt
 */
 Ext.lib.Ajax = function() {
-    var activeX = ['Msxml2.XMLHTTP.6.0',
                    'Msxml2.XMLHTTP.3.0',
                    'Msxml2.XMLHTTP'],
         CONTENTTYPE = 'Content-Type';
