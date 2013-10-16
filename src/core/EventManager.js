@@ -87,9 +87,6 @@ Ext.EventManager = function(){
         if(el.addEventListener && ename == "mousewheel"){
             var args = ["DOMMouseScroll", wrap, false];
             el.addEventListener.apply(el, args);
-            Ext.EventManager.addListener(WINDOW, 'unload', function(){
-                el.removeEventListener.apply(el, args);
-            });
         }
 
         // fix stopped mousedowns on the document
