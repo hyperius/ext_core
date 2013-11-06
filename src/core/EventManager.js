@@ -624,6 +624,7 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
         }
         
         if (Ext.isGecko) {
+            cls.push('ext-gecko');
             if (Ext.isGecko2) {
                 cls.push('ext-gecko2');
             } else {
