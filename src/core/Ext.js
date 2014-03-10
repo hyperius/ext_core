@@ -58,12 +58,13 @@ Ext.apply = function(o, c, defaults){
         isSafari2 = isSafari && check(/applewebkit\/4/), // unique to Safari 2
         isSafari3 = isSafari && check(/version\/3/),
         isSafari4 = isSafari && check(/version\/4/),
-        isIE = !isOpera && check(/msie/),
+        isIE = !isOpera && (check(/msie/) || check(/Trident/)),
+        isIE6 = isIE && check(/msie 6/),
         isIE7 = isIE && ((check(/msie 7/) && docMode != 8 && docMode != 9 && docMode != 10) || docMode == 7),
         isIE8 = isIE && ((check(/msie 8/) && docMode != 7 && docMode != 9 && docMode != 10) || docMode == 8),
         isIE9 = isIE && ((check(/msie 9/) && docMode != 7 && docMode != 8 && docMode != 10) || docMode == 9),
         isIE10 = isIE && ((check(/msie 10/) && docMode != 7 && docMode != 8 && docMode != 9) || docMode == 10),
-        isIE6 = isIE && check(/msie 6/),
+        isIE11 = isIE && ((check(/Trident\/7.0/) && docMode != 7 && docMode != 8 && docMode != 9 && docMode != 10) || docMode == 11),
         isIE9m = isIE && (isIE6 || isIE7 || isIE8 || isIE9),
         isGecko = !isWebKit && check(/gecko/),
         isGecko2 = isGecko && check(/rv:1\.8/),
@@ -1188,6 +1189,12 @@ function(el){
          * @type Boolean
          */
         isIE10 : isIE10,
+
+        /**
+         * True if the detected browser is Internet Explorer 11.x
+         * @type Boolean
+         */
+        isIE11: isIE11,
         
         /**
          * True if the detected browser is Internet Explorer 9.x or lower
@@ -1199,11 +1206,11 @@ function(el){
          * True if the detected browser is Internet Explorer 10.x or higher
          * @type Boolean
          */ 
-        isIE10p : isIE && !(isIE6 || isIE7 || isIE8 || isIE9),
+        isIE10p : isIE && !isIE9m,
         
         // IE10 quirks behaves like Gecko/WebKit quirks, so don't include it here
         // Used internally
-        isIEQuirks: isIE && (!isStrict && (isIE6 || isIE7 || isIE8 || isIE9)),
+        isIEQuirks: isIE && !isStrict && isIE9m,
                 
         /**
          * True if the detected browser uses the Gecko layout engine (e.g. Mozilla, Firefox).

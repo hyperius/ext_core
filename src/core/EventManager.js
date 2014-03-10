@@ -620,6 +620,8 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
                 cls.push('ext-ie9', 'ext-ie9m');
             } else if (Ext.isIE10) {
                 cls.push('ext-ie10');
+            } else if (Ext.isIE11) {
+                cls.push('ext-ie11');
             }
         }
         
@@ -659,9 +661,6 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
             if (p) {
                 if (!Ext.isStrict) {
                     Ext.fly(p, '_internal').addClass('x-quirks');
-                    if (Ext.isIE9m && !Ext.isStrict) {
-                        Ext.isIEQuirks = true;
-                    }
                 }
                 Ext.fly(p, '_internal').addClass(((Ext.isStrict && Ext.isIE ) || (!Ext.enableForcedBoxModel && !Ext.isIE)) ? ' ext-strict' : ' ext-border-box');
             }
@@ -777,7 +776,7 @@ Ext.EventObject = function(){
             63275 : 35  // end
         },
         // normalize button clicks
-        btnMap = Ext.isIE ? {1:0,4:1,2:2} : {0:0,1:1,2:2};
+        btnMap = Ext.isIE9m ? {1:0,4:1,2:2} : {0:0,1:1,2:2};
 
     Ext.EventObjectImpl = function(e){
         if(e){
