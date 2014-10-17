@@ -998,7 +998,7 @@ function(el){
          * @param {HTMLElement} node The node to remove
          * @method
          */
-        removeNode : isIE && !isIE9m ? function(){
+        removeNode : isIE9m ? function(){
             var d;
             return function(n){
                 if(n && n.tagName != 'BODY'){
