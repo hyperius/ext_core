@@ -58,13 +58,13 @@ Ext.apply = function(o, c, defaults){
         isSafari2 = isSafari && check(/applewebkit\/4/), // unique to Safari 2
         isSafari3 = isSafari && check(/version\/3/),
         isSafari4 = isSafari && check(/version\/4/),
-        isIE = !isOpera && (check(/msie/) || check(/Trident/)),
+        isIE = !isOpera && (check(/msie/) || check(/trident/)),
         isIE6 = isIE && check(/msie 6/),
         isIE7 = isIE && ((check(/msie 7/) && docMode != 8 && docMode != 9 && docMode != 10) || docMode == 7),
         isIE8 = isIE && ((check(/msie 8/) && docMode != 7 && docMode != 9 && docMode != 10) || docMode == 8),
         isIE9 = isIE && ((check(/msie 9/) && docMode != 7 && docMode != 8 && docMode != 10) || docMode == 9),
         isIE10 = isIE && ((check(/msie 10/) && docMode != 7 && docMode != 8 && docMode != 9) || docMode == 10),
-        isIE11 = isIE && ((check(/Trident\/7.0/) && docMode != 7 && docMode != 8 && docMode != 9 && docMode != 10) || docMode == 11),
+        isIE11 = isIE && ((check(/trident\/7.0/) && docMode != 7 && docMode != 8 && docMode != 9 && docMode != 10) || docMode == 11),
         isIE9m = isIE && (isIE6 || isIE7 || isIE8 || isIE9),
         isGecko = !isWebKit && check(/gecko/),
         isGecko2 = isGecko && check(/rv:1\.8/),
@@ -998,7 +998,7 @@ function(el){
          * @param {HTMLElement} node The node to remove
          * @method
          */
-        removeNode : isIE && !isIE8 ? function(){
+        removeNode : isIE && !isIE9m ? function(){
             var d;
             return function(n){
                 if(n && n.tagName != 'BODY'){

@@ -619,9 +619,9 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
             } else if (Ext.isIE9) {
                 cls.push('ext-ie9', 'ext-ie9m');
             } else if (Ext.isIE10) {
-                cls.push('ext-ie10');
+                cls.push('ext-ie10', 'ext-ie10m');
             } else if (Ext.isIE11) {
-                cls.push('ext-ie11');
+                cls.push('ext-ie11', 'ext-ie11m');
             }
         }
         
